@@ -1,0 +1,6 @@
+framework module Pods_TestSensingKitTests {
+  umbrella header "Pods-TestSensingKitTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
