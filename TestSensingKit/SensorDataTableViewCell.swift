@@ -27,9 +27,7 @@ class SensorDataTableViewCell: UITableViewCell {
     func set(sensorName: String, sensorData: String, updateFrequency: String) {
         sensorNameLabel.text = sensorName
         sensorDataLabel.text = sensorData
-        updateFrequencyLabel.text = updateFrequency.count < 4 ? updateFrequency
-            : String(updateFrequency[..<updateFrequency.index(updateFrequency.startIndex, offsetBy: 6)])
-        
+        updateFrequencyLabel.text = updateFrequency
     }
     
 }

@@ -21,7 +21,9 @@ class ViewController: UIViewController {
         var data: String
         var prevDate: Date
         var frequency: [TimeInterval]
-        var averageАrequency: TimeInterval = 0.0
+        var averageFrequency: TimeInterval = 0.0
+        var backgroundFrequency: [TimeInterval] = []
+        var backgroundAverageFrequency: TimeInterval = 0.0
     }
     
     let sensorDataTableViewCell = "SensorDataTableViewCell"
@@ -46,6 +48,13 @@ class ViewController: UIViewController {
         for sensor in allSensorType {
             do {
                 try sensingKit.register(sensor.type)
+                if sensor.type == .Location {
+                    let conf = SKLocationConfiguration()
+                    conf.locationAuthorization = .always
+                    try sensingKit.setConfiguration(conf, to: .Location)
+                }
+                
+
             }
             catch {
                 print(error)
@@ -58,7 +67,12 @@ class ViewController: UIViewController {
             catch {
                 print(error)
             }
+        
+            
+
         }
+        
+        
         
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             let offset = self.tableView.contentOffset
@@ -113,6 +127,10 @@ class ViewController: UIViewController {
                     case .Location:
                         let data = sensorData as! SKLocationData
                         self.allSensorType[index].data = "location: \(data.location)"
+                        if UIApplication.shared.applicationState == .background {
+                            print("location: \(self.allSensorType[index].data), frequency: \(self.allSensorType[index].frequency.last) ")
+                        }
+                        
                     case .Heading:
                         let data = sensorData as! SKHeadingData
                         self.allSensorType[index].data = "heading: \(data.heading)"
@@ -132,9 +150,12 @@ class ViewController: UIViewController {
                     
                     if index == -1 { return }
                     self.allSensorType[index].frequency.append(Date().timeIntervalSince(self.allSensorType[index].prevDate))
-                    self.allSensorType[index].averageАrequency = self.allSensorType[index].frequency.average()
+                    self.allSensorType[index].averageFrequency = self.allSensorType[index].frequency.average()
+                    if UIApplication.shared.applicationState == .background {
+                        self.allSensorType[index].backgroundFrequency.append(Date().timeIntervalSince(self.allSensorType[index].prevDate))
+                        self.allSensorType[index].backgroundAverageFrequency = self.allSensorType[index].backgroundFrequency.average()
+                    }
                     self.allSensorType[index].prevDate = Date()
-
 
                }
             })
@@ -231,7 +252,8 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             cell.set(sensorName: "Sensor", sensorData: "Data", updateFrequency: "Update frequency")
         default:
             if indexPath.row - 1 < allSensorType.count {
-                cell.set(sensorName: getSensorName(type: allSensorType[indexPath.row - 1].type), sensorData: allSensorType[indexPath.row - 1].data, updateFrequency: allSensorType[indexPath.row - 1].averageАrequency.description)
+                cell.set(sensorName: getSensorName(type: allSensorType[indexPath.row - 1].type), sensorData: allSensorType[indexPath.row - 1].data, updateFrequency: "all: \(allSensorType[indexPath.row - 1].averageFrequency), background: \(allSensorType[indexPath.row - 1].backgroundAverageFrequency)")
+                
             }
         }
         
