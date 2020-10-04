@@ -22,6 +22,7 @@
 		96A2D9DA252911BF00EEA0C0 /* SensorDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96A2D9D6252911BF00EEA0C0 /* SensorDataTableViewCell.xib */; };
 		96A2D9DB252911BF00EEA0C0 /* SensorDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96A2D9D6252911BF00EEA0C0 /* SensorDataTableViewCell.xib */; };
 		96A2D9DC252911BF00EEA0C0 /* SensorDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96A2D9D6252911BF00EEA0C0 /* SensorDataTableViewCell.xib */; };
+		96FFA003252A49E200CFD96A /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FFA002252A49E200CFD96A /* UserDefaults.swift */; };
 		B183AFD179702AE2C18D8CFC /* Pods_TestSensingKitUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE877F9E8AC6FDF89CAFC46 /* Pods_TestSensingKitUITests.framework */; };
 		FEE18F70AEF727FE9E7307EF /* Pods_TestSensingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 864B97D58559D0879C7791F1 /* Pods_TestSensingKit.framework */; };
 /* End PBXBuildFile section */
@@ -66,6 +67,7 @@
 		96A2D9B825266B1C00EEA0C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		96A2D9D5252911BF00EEA0C0 /* SensorDataTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDataTableViewCell.swift; sourceTree = "<group>"; };
 		96A2D9D6252911BF00EEA0C0 /* SensorDataTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SensorDataTableViewCell.xib; sourceTree = "<group>"; };
+		96FFA002252A49E200CFD96A /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		E98B2D33B1BC0B5CCC7076A2 /* Pods-TestSensingKitUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKitUITests.release.xcconfig"; path = "Target Support Files/Pods-TestSensingKitUITests/Pods-TestSensingKitUITests.release.xcconfig"; sourceTree = "<group>"; };
 		F6D0493BA6FC091EC0201E42 /* Pods-TestSensingKit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKit.debug.xcconfig"; path = "Target Support Files/Pods-TestSensingKit/Pods-TestSensingKit.debug.xcconfig"; sourceTree = "<group>"; };
 		FF50D22DB528256CCCCA4CA9 /* Pods-TestSensingKitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKitTests.release.xcconfig"; path = "Target Support Files/Pods-TestSensingKitTests/Pods-TestSensingKitTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 				96A2D99425266B1900EEA0C0 /* AppDelegate.swift */,
 				96A2D99625266B1900EEA0C0 /* SceneDelegate.swift */,
 				96A2D99825266B1900EEA0C0 /* ViewController.swift */,
+				96FFA002252A49E200CFD96A /* UserDefaults.swift */,
 				96A2D99A25266B1900EEA0C0 /* Main.storyboard */,
 				96A2D9D5252911BF00EEA0C0 /* SensorDataTableViewCell.swift */,
 				96A2D9D6252911BF00EEA0C0 /* SensorDataTableViewCell.xib */,
@@ -402,6 +405,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96A2D99925266B1900EEA0C0 /* ViewController.swift in Sources */,
+				96FFA003252A49E200CFD96A /* UserDefaults.swift in Sources */,
 				96A2D99525266B1900EEA0C0 /* AppDelegate.swift in Sources */,
 				96A2D99725266B1900EEA0C0 /* SceneDelegate.swift in Sources */,
 				96A2D9D7252911BF00EEA0C0 /* SensorDataTableViewCell.swift in Sources */,

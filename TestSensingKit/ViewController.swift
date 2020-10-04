@@ -11,6 +11,17 @@ import SensorKit
 import Pods_TestSensingKit
 
 let sensingKit = SensingKitLib.shared()
+var allSensorType = [sensorData]()
+
+struct sensorData {
+    let type: SKSensorType
+    var data: String
+    var prevDate: Date
+    var frequency: [TimeInterval]
+    var averageFrequency: TimeInterval = 0
+    var backgroundFrequency: [TimeInterval] = []
+    var backgroundAverageFrequency: TimeInterval = 0
+}
 
 class ViewController: UIViewController {
     
@@ -22,8 +33,8 @@ class ViewController: UIViewController {
         var prevDate: Date
         var frequency: [TimeInterval]
         var averageFrequency: TimeInterval = 0.0
-        var backgroundFrequency: [TimeInterval] = []
-        var backgroundAverageFrequency: TimeInterval = 0.0
+        var backgroundFrequency: [TimeInterval] = SensorData.shared.backgroundAverageFrequencyLocationList
+        var backgroundAverageFrequency: TimeInterval = SensorData.shared.backgroundAverageFrequencyLocation
     }
     
     let sensorDataTableViewCell = "SensorDataTableViewCell"
@@ -45,6 +56,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         configurateTableView()
         
+        SensorData.shared.backgroundAverageFrequencyLocationList = []
+        SensorData.shared.backgroundAverageFrequencyLocation = 0.0
+        
         for sensor in allSensorType {
             do {
                 try sensingKit.register(sensor.type)
@@ -64,7 +78,7 @@ class ViewController: UIViewController {
             do {
                 try sensingKit.startContinuousSensing(with: sensor.type)
             }
-            catch {
+            catch(let error) {
                 print(error)
             }
         
@@ -127,9 +141,6 @@ class ViewController: UIViewController {
                     case .Location:
                         let data = sensorData as! SKLocationData
                         self.allSensorType[index].data = "location: \(data.location)"
-                        if UIApplication.shared.applicationState == .background {
-                            print("location: \(self.allSensorType[index].data), frequency: \(self.allSensorType[index].frequency.last) ")
-                        }
                         
                     case .Heading:
                         let data = sensorData as! SKHeadingData
@@ -149,11 +160,18 @@ class ViewController: UIViewController {
 
                     
                     if index == -1 { return }
-                    self.allSensorType[index].frequency.append(Date().timeIntervalSince(self.allSensorType[index].prevDate))
-                    self.allSensorType[index].averageFrequency = self.allSensorType[index].frequency.average()
+
+                    
                     if UIApplication.shared.applicationState == .background {
                         self.allSensorType[index].backgroundFrequency.append(Date().timeIntervalSince(self.allSensorType[index].prevDate))
                         self.allSensorType[index].backgroundAverageFrequency = self.allSensorType[index].backgroundFrequency.average()
+                        if self.allSensorType[index].type == .Location {
+                            SensorData.shared.backgroundAverageFrequencyLocationList = self.allSensorType[index].backgroundFrequency
+                            SensorData.shared.backgroundAverageFrequencyLocation = self.allSensorType[index].backgroundAverageFrequency
+                        }
+                    } else {
+                        self.allSensorType[index].frequency.append(Date().timeIntervalSince(self.allSensorType[index].prevDate))
+                        self.allSensorType[index].averageFrequency = self.allSensorType[index].frequency.average()
                     }
                     self.allSensorType[index].prevDate = Date()
 
@@ -253,7 +271,6 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         default:
             if indexPath.row - 1 < allSensorType.count {
                 cell.set(sensorName: getSensorName(type: allSensorType[indexPath.row - 1].type), sensorData: allSensorType[indexPath.row - 1].data, updateFrequency: "all: \(allSensorType[indexPath.row - 1].averageFrequency), background: \(allSensorType[indexPath.row - 1].backgroundAverageFrequency)")
-                
             }
         }
         
