@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		14689931A9E012A2C9CEF740 /* Pods_TestSensingKitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C39221DA0416F000CED6855 /* Pods_TestSensingKitTests.framework */; };
+		968025FB252A857E00A12D48 /* Test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 968025FA252A857E00A12D48 /* Test.txt */; };
 		96A2D99525266B1900EEA0C0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99425266B1900EEA0C0 /* AppDelegate.swift */; };
 		96A2D99725266B1900EEA0C0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99625266B1900EEA0C0 /* SceneDelegate.swift */; };
 		96A2D99925266B1900EEA0C0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99825266B1900EEA0C0 /* ViewController.swift */; };
@@ -51,6 +52,7 @@
 		301807055537BA951EF305A0 /* Pods-TestSensingKitUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKitUITests.debug.xcconfig"; path = "Target Support Files/Pods-TestSensingKitUITests/Pods-TestSensingKitUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		7BD60DA25F6FF5C1D63CE918 /* Pods-TestSensingKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKit.release.xcconfig"; path = "Target Support Files/Pods-TestSensingKit/Pods-TestSensingKit.release.xcconfig"; sourceTree = "<group>"; };
 		864B97D58559D0879C7791F1 /* Pods_TestSensingKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestSensingKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		968025FA252A857E00A12D48 /* Test.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test.txt; sourceTree = "<group>"; };
 		96A2D99125266B1900EEA0C0 /* TestSensingKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestSensingKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A2D99425266B1900EEA0C0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96A2D99625266B1900EEA0C0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				96A2D99A25266B1900EEA0C0 /* Main.storyboard */,
 				96A2D9D5252911BF00EEA0C0 /* SensorDataTableViewCell.swift */,
 				96A2D9D6252911BF00EEA0C0 /* SensorDataTableViewCell.xib */,
+				968025FA252A857E00A12D48 /* Test.txt */,
 				96A2D99D25266B1B00EEA0C0 /* Assets.xcassets */,
 				96A2D99F25266B1B00EEA0C0 /* LaunchScreen.storyboard */,
 				96A2D9A225266B1B00EEA0C0 /* Info.plist */,
@@ -288,6 +291,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				968025FB252A857E00A12D48 /* Test.txt in Resources */,
 				96A2D9A125266B1B00EEA0C0 /* LaunchScreen.storyboard in Resources */,
 				96A2D99E25266B1B00EEA0C0 /* Assets.xcassets in Resources */,
 				96A2D99C25266B1900EEA0C0 /* Main.storyboard in Resources */,
@@ -516,7 +520,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -571,7 +575,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -587,15 +591,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 7SFK2T7DS9;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 4WX79X589K;
 				INFOPLIST_FILE = TestSensingKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.TestSensingKit.TestSensingKit;
+				PRODUCT_BUNDLE_IDENTIFIER = au.com.neomatrix.flow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = Kseniya;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -607,15 +613,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 7SFK2T7DS9;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 4WX79X589K;
 				INFOPLIST_FILE = TestSensingKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.TestSensingKit.TestSensingKit;
+				PRODUCT_BUNDLE_IDENTIFIER = au.com.neomatrix.flow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = Kseniya;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -627,7 +635,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TestSensingKitTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -636,7 +647,10 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.TestSensingKit.TestSensingKitTests;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestSensingKit.app/TestSensingKit";
@@ -649,7 +663,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TestSensingKitTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -658,7 +675,10 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.TestSensingKit.TestSensingKitTests;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestSensingKit.app/TestSensingKit";
@@ -670,7 +690,9 @@
 			baseConfigurationReference = 301807055537BA951EF305A0 /* Pods-TestSensingKitUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 4WX79X589K;
 				INFOPLIST_FILE = TestSensingKitUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -678,7 +700,10 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.TestSensingKit.TestSensingKitUITests;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = Kseniya;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = TestSensingKit;
@@ -690,7 +715,9 @@
 			baseConfigurationReference = E98B2D33B1BC0B5CCC7076A2 /* Pods-TestSensingKitUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 4WX79X589K;
 				INFOPLIST_FILE = TestSensingKitUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -698,7 +725,10 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.TestSensingKit.TestSensingKitUITests;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = Kseniya;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = TestSensingKit;

@@ -10,6 +10,8 @@ import SensingKit
 import SensorKit
 import Pods_TestSensingKit
 
+fileprivate let fileName = "Test"
+
 let sensingKit = SensingKitLib.shared()
 var allSensorType = [sensorData]()
 
@@ -21,11 +23,16 @@ struct sensorData {
     var averageFrequency: TimeInterval = 0
     var backgroundFrequency: [TimeInterval] = []
     var backgroundAverageFrequency: TimeInterval = 0
+    
 }
 
 class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    
+    var documentDirURL: URL?
+    
+    var fileURL: URL?
     
     struct sensorData {
         let type: SKSensorType
@@ -52,13 +59,7 @@ class ViewController: UIViewController {
                          sensorData(type: SKSensorType.EddystoneProximity, data: "", prevDate: Date(), frequency: []),
                          sensorData(type: SKSensorType.Microphone, data: "", prevDate: Date(), frequency: [])]
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configurateTableView()
-        
-        SensorData.shared.backgroundAverageFrequencyLocationList = []
-        SensorData.shared.backgroundAverageFrequencyLocation = 0.0
-        
+    fileprivate func configurateSensors() {
         for sensor in allSensorType {
             do {
                 try sensingKit.register(sensor.type)
@@ -68,10 +69,10 @@ class ViewController: UIViewController {
                     try sensingKit.setConfiguration(conf, to: .Location)
                 }
                 
-
+                
             }
             catch {
-                print(error)
+                print(error.localizedDescription)
             }
             subscribeSensor(type: sensor.type, typeName: getSensorName(type: sensor.type))
             //             Start
@@ -79,16 +80,32 @@ class ViewController: UIViewController {
                 try sensingKit.startContinuousSensing(with: sensor.type)
             }
             catch(let error) {
-                print(error)
+                print(error.localizedDescription)
             }
-        
             
-
+            
+            
         }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configurateTableView()
         
+        SensorData.shared.backgroundAverageFrequencyLocationList = []
+        SensorData.shared.backgroundAverageFrequencyLocation = 0.0
         
+        print("File Text: \(readDataFromFile() ?? "text file is empty")")
+        configurateSensors()
         
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
+            var data = dateFormatter.string(from: Date()) //+ String(describing: self.allSensorType)
+            if let previousData = self.readDataFromFile() {
+                data = previousData + data
+            }
+            self.writeDataToFile(data: data)
             let offset = self.tableView.contentOffset
             self.tableView.reloadData()
             self.tableView.setContentOffset(offset, animated: false)
@@ -96,6 +113,29 @@ class ViewController: UIViewController {
             self.tableView.updateConstraintsIfNeeded()
         }
         
+    }
+    
+    func writeDataToFile(data: String) -> Bool {
+        do {
+            let documentDirURL = try FileManager.default.url(for: .allLibrariesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            let fileURL = documentDirURL.appendingPathComponent(fileName).appendingPathExtension("txt")
+            try data.write(to: fileURL, atomically: true, encoding: String.Encoding.utf8)
+            return true
+        } catch (let error) {
+            print(error.localizedDescription)
+        }
+        return false
+    }
+    
+    func readDataFromFile() -> String? {
+        do {
+            let documentDirURL = try FileManager.default.url(for: .allLibrariesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            let fileURL = documentDirURL.appendingPathComponent(fileName).appendingPathExtension("txt")
+            return try String(contentsOf: fileURL)
+        } catch (let error) {
+            print(error.localizedDescription)
+        }
+        return nil
     }
     
     func configurateTableView() {
@@ -113,7 +153,7 @@ class ViewController: UIViewController {
                     
                     let index = self.getSensorIndex(type: type)
                     switch type {
-
+                    
                     case .Accelerometer:
                         let data = sensorData as! SKAccelerometerData
                         self.allSensorType[index].data = "X: \(data.acceleration.x), Y: \(data.acceleration.y), Z: \(data.acceleration.z)"
@@ -141,7 +181,6 @@ class ViewController: UIViewController {
                     case .Location:
                         let data = sensorData as! SKLocationData
                         self.allSensorType[index].data = "location: \(data.location)"
-                        
                     case .Heading:
                         let data = sensorData as! SKHeadingData
                         self.allSensorType[index].data = "heading: \(data.heading)"
@@ -157,10 +196,10 @@ class ViewController: UIViewController {
                     @unknown default:
                         print(index, self.getSensorName(type: sensorType), "sensor index and name")
                     }
-
+                    
                     
                     if index == -1 { return }
-
+                    
                     
                     if UIApplication.shared.applicationState == .background {
                         self.allSensorType[index].backgroundFrequency.append(Date().timeIntervalSince(self.allSensorType[index].prevDate))
@@ -174,18 +213,21 @@ class ViewController: UIViewController {
                         self.allSensorType[index].averageFrequency = self.allSensorType[index].frequency.average()
                     }
                     self.allSensorType[index].prevDate = Date()
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
+                    _ = self.writeDataToFile(data: dateFormatter.string(from: Date()))
 
-               }
+                }
             })
         }
         catch {
-            print(error)
+            print(error.localizedDescription)
         }
     }
     
-//    func updateSensorData(data: SKSensorData, ) {
-//
-//    }
+    //    func updateSensorData(data: SKSensorData, ) {
+    //
+    //    }
     
     func getSensorName(type: SKSensorType) -> String {
         switch type {
