@@ -2,12 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Please accept for correct app work</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Please accept for correct app work</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Please accept for correct app work</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>au.com.neomatrix.flow</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -29,7 +27,7 @@
 	<key>CFBundleSignature</key>
 	<string></string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
@@ -40,7 +38,13 @@
 	<string>Please accept for correct app work</string>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Please accept for correct app work</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Please accept for correct app work</string>
 	<key>NSLocationDefaultAccuracyReduced</key>
+	<string>Please accept for correct app work</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Please accept for correct app work</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Please accept for correct app work</string>
