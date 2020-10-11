@@ -63,27 +63,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("File Text: \(readDataFromFile() ?? "text file is empty")")
         configurateSensors()
         
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
             var data = dateFormatter.string(from: Date()) //+ String(describing: self.allSensorType)
             if let previousData = self.readDataFromFile() {
                 data = previousData + data
             }
+            print(data)
             self.writeDataToFile(data: data)
 
-            
-        }
         return true
     }
 
     // MARK: UISceneSession Lifecycle
+    @available(iOS 13.0, *)
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         // Called when a new scene session is being created.
         // Use this method to select a configuration to create the new scene with.
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
+    @available(iOS 13.0, *)
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
         // Called when the user discards a scene session.
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
@@ -96,7 +96,7 @@ func writeDataToFile(data: String) -> Bool {
     do {
         let documentDirURL = try FileManager.default.url(for: .allLibrariesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let fileURL = documentDirURL.appendingPathComponent(fileName).appendingPathExtension("txt")
-        try data.write(to: fileURL, atomically: true, encoding: String.Encoding.utf8)
+        try data.write(to: fileURL, atomically: false, encoding: String.Encoding.utf8)
         return true
     } catch (let error) {
         print(error.localizedDescription)
@@ -108,7 +108,8 @@ func readDataFromFile() -> String? {
     do {
         let documentDirURL = try FileManager.default.url(for: .allLibrariesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let fileURL = documentDirURL.appendingPathComponent(fileName).appendingPathExtension("txt")
-        return try String(contentsOf: fileURL)
+        let data = try String(contentsOf: fileURL)
+        return data
     } catch (let error) {
         print(error.localizedDescription)
     }
@@ -185,7 +186,9 @@ func subscribeSensor(type:SKSensorType, typeName: String) {
                     self.allSensorType[index].averageFrequency = self.allSensorType[index].frequency.average()
                 }
                 self.allSensorType[index].prevDate = Date()
-                
+
+                self.writeDataToFile(data: Date().description)
+                self.readDataFromFile()
             }
         })
     }

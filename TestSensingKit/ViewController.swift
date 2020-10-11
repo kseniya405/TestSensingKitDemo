@@ -90,28 +90,28 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configurateTableView()
-        
-        SensorData.shared.backgroundAverageFrequencyLocationList = []
-        SensorData.shared.backgroundAverageFrequencyLocation = 0.0
-        
-        print("File Text: \(readDataFromFile() ?? "text file is empty")")
-        configurateSensors()
-        
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
-            var data = dateFormatter.string(from: Date()) //+ String(describing: self.allSensorType)
-            if let previousData = self.readDataFromFile() {
-                data = previousData + data
-            }
-            self.writeDataToFile(data: data)
-            let offset = self.tableView.contentOffset
-            self.tableView.reloadData()
-            self.tableView.setContentOffset(offset, animated: false)
-            self.tableView.layoutIfNeeded()
-            self.tableView.updateConstraintsIfNeeded()
-        }
+//        configurateTableView()
+//        
+//        SensorData.shared.backgroundAverageFrequencyLocationList = []
+//        SensorData.shared.backgroundAverageFrequencyLocation = 0.0
+//        
+//        print("File Text: \(readDataFromFile() ?? "text file is empty")")
+//        configurateSensors()
+//        
+//        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
+//            var data = dateFormatter.string(from: Date()) //+ String(describing: self.allSensorType)
+//            if let previousData = self.readDataFromFile() {
+//                data = previousData + data
+//            }
+//            self.writeDataToFile(data: data)
+//            let offset = self.tableView.contentOffset
+//            self.tableView.reloadData()
+//            self.tableView.setContentOffset(offset, animated: false)
+//            self.tableView.layoutIfNeeded()
+//            self.tableView.updateConstraintsIfNeeded()
+//        }
         
     }
     
