@@ -10,6 +10,8 @@ import SensingKit
 import SensorKit
 import Pods_TestSensingKit
 
+import CoreLocation
+
 fileprivate let fileName = "Test"
 
 let sensingKit = SensingKitLib.shared()
@@ -30,9 +32,17 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    @IBAction func showWritingDataButtonDidTap(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ShowFileDataViewController")
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     var documentDirURL: URL?
     
     var fileURL: URL?
+    
+    var locationManager: CLLocationManager?
     
     struct sensorData {
         let type: SKSensorType
@@ -90,28 +100,32 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        configurateTableView()
-//        
-//        SensorData.shared.backgroundAverageFrequencyLocationList = []
-//        SensorData.shared.backgroundAverageFrequencyLocation = 0.0
-//        
-//        print("File Text: \(readDataFromFile() ?? "text file is empty")")
-//        configurateSensors()
-//        
-//        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-//            let dateFormatter = DateFormatter()
-//            dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
-//            var data = dateFormatter.string(from: Date()) //+ String(describing: self.allSensorType)
-//            if let previousData = self.readDataFromFile() {
-//                data = previousData + data
-//            }
-//            self.writeDataToFile(data: data)
-//            let offset = self.tableView.contentOffset
-//            self.tableView.reloadData()
-//            self.tableView.setContentOffset(offset, animated: false)
-//            self.tableView.layoutIfNeeded()
-//            self.tableView.updateConstraintsIfNeeded()
-//        }
+        configurateTableView()
+        
+        SensorData.shared.backgroundAverageFrequencyLocationList = []
+        SensorData.shared.backgroundAverageFrequencyLocation = 0.0
+        
+        print("File Text: \(readDataFromFile() ?? "text file is empty")")
+        //        configurateSensors()
+        tableView.contentInset.bottom = 100
+        locationManager = CLLocationManager()
+        locationManager?.delegate = self
+        locationManager?.allowsBackgroundLocationUpdates = true
+        locationManager?.requestAlwaysAuthorization()
+        //        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+        //            let dateFormatter = DateFormatter()
+        //            dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
+        //            var data = dateFormatter.string(from: Date()) //+ String(describing: self.allSensorType)
+        //            if let previousData = self.readDataFromFile() {
+        //                data = previousData + " " + data
+        //            }
+        // //           self.writeDataToFile(data: data)
+        //            let offset = self.tableView.contentOffset
+        //            self.tableView.reloadData()
+        //            self.tableView.setContentOffset(offset, animated: false)
+        //            self.tableView.layoutIfNeeded()
+        //            self.tableView.updateConstraintsIfNeeded()
+        //        }
         
     }
     
@@ -215,8 +229,8 @@ class ViewController: UIViewController {
                     self.allSensorType[index].prevDate = Date()
                     let dateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
-                    _ = self.writeDataToFile(data: dateFormatter.string(from: Date()))
-
+                    //_ = self.writeDataToFile(data: dateFormatter.string(from: Date()))
+                    
                 }
             })
         }
@@ -295,8 +309,32 @@ class ViewController: UIViewController {
         }
     }
     
+    func addToFile(string: String) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
+        var data = dateFormatter.string(from: Date()) + string
+        if let previousData = self.readDataFromFile() {
+            data = data + previousData
+        }
+        self.writeDataToFile(data: data)
+    }
+    
 }
 
+extension ViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways {
+           print("Access to location granted")
+            
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            addToFile(string: "New location is \(location)")
+        }
+    }
+}
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		14689931A9E012A2C9CEF740 /* Pods_TestSensingKitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C39221DA0416F000CED6855 /* Pods_TestSensingKitTests.framework */; };
+		964599BB2533587600B538FB /* ShowFileDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964599BA2533587600B538FB /* ShowFileDataViewController.swift */; };
 		968025FB252A857E00A12D48 /* Test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 968025FA252A857E00A12D48 /* Test.txt */; };
 		96A2D99525266B1900EEA0C0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99425266B1900EEA0C0 /* AppDelegate.swift */; };
 		96A2D99725266B1900EEA0C0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99625266B1900EEA0C0 /* SceneDelegate.swift */; };
@@ -52,6 +53,7 @@
 		301807055537BA951EF305A0 /* Pods-TestSensingKitUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKitUITests.debug.xcconfig"; path = "Target Support Files/Pods-TestSensingKitUITests/Pods-TestSensingKitUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		7BD60DA25F6FF5C1D63CE918 /* Pods-TestSensingKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKit.release.xcconfig"; path = "Target Support Files/Pods-TestSensingKit/Pods-TestSensingKit.release.xcconfig"; sourceTree = "<group>"; };
 		864B97D58559D0879C7791F1 /* Pods_TestSensingKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestSensingKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		964599BA2533587600B538FB /* ShowFileDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowFileDataViewController.swift; sourceTree = "<group>"; };
 		968025FA252A857E00A12D48 /* Test.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test.txt; sourceTree = "<group>"; };
 		96A2D99125266B1900EEA0C0 /* TestSensingKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestSensingKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A2D99425266B1900EEA0C0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				96A2D99825266B1900EEA0C0 /* ViewController.swift */,
 				96FFA002252A49E200CFD96A /* UserDefaults.swift */,
 				96A2D99A25266B1900EEA0C0 /* Main.storyboard */,
+				964599BA2533587600B538FB /* ShowFileDataViewController.swift */,
 				96A2D9D5252911BF00EEA0C0 /* SensorDataTableViewCell.swift */,
 				96A2D9D6252911BF00EEA0C0 /* SensorDataTableViewCell.xib */,
 				968025FA252A857E00A12D48 /* Test.txt */,
@@ -412,6 +415,7 @@
 				96FFA003252A49E200CFD96A /* UserDefaults.swift in Sources */,
 				96A2D99525266B1900EEA0C0 /* AppDelegate.swift in Sources */,
 				96A2D99725266B1900EEA0C0 /* SceneDelegate.swift in Sources */,
+				964599BB2533587600B538FB /* ShowFileDataViewController.swift in Sources */,
 				96A2D9D7252911BF00EEA0C0 /* SensorDataTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

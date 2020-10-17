@@ -60,18 +60,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        print("File Text: \(readDataFromFile() ?? "text file is empty")")
-        configurateSensors()
+//        print("File Text: \(readDataFromFile() ?? "text file is empty")")
+//        configurateSensors()
+//        writeDataToFile(data: "")
         
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
-            var data = dateFormatter.string(from: Date()) //+ String(describing: self.allSensorType)
-            if let previousData = self.readDataFromFile() {
-                data = previousData + data
-            }
-            print(data)
-            self.writeDataToFile(data: data)
-
+//        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+//
+//            //
+//        }
         return true
     }
 
@@ -90,7 +86,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
-
+    func addToFile(string: String) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
+        var data = dateFormatter.string(from: Date()) + string
+        if let previousData = self.readDataFromFile() {
+            data = data + previousData
+        }
+        self.writeDataToFile(data: data)
+    }
 
 func writeDataToFile(data: String) -> Bool {
     do {
@@ -130,12 +134,19 @@ func subscribeSensor(type:SKSensorType, typeName: String) {
                 case .Accelerometer:
                     let data = sensorData as! SKAccelerometerData
                     self.allSensorType[index].data = "X: \(data.acceleration.x), Y: \(data.acceleration.y), Z: \(data.acceleration.z)"
+                    self.addToFile(string: " Accelerometer" + Date().description)
+//                    self.addToFile(string: self.allSensorType[index].data + Date().description)
                 case .Gyroscope:
                     let data = sensorData as! SKGyroscopeData
                     self.allSensorType[index].data = "X: \(data.rotationRate.x), Y: \(data.rotationRate.y), Z: \(data.rotationRate.z)"
+//                    self.addToFile(string: "\n" + self.allSensorType[index].data + Date().description)
+                    self.addToFile(string: " Gyroscope")
+
                 case .Magnetometer:
                     let data = sensorData as! SKMagnetometerData
                     self.allSensorType[index].data = "X: \(data.magneticField.x), Y: \(data.magneticField.y), Z: \(data.magneticField.z)"
+//                    self.addToFile(string: self.allSensorType[index].data + Date().description)
+                    self.addToFile(string: " Magnetometer")
                 case .DeviceMotion:
                     let data = sensorData as! SKDeviceMotionData
                     self.allSensorType[index].data = "Magnetic field: x:\(data.magneticField.field.x), y: \(data.magneticField.field.y), z: \(data.magneticField.field.z), attitude: \(data.attitude), rotationRate: \(data.rotationRate), userAcceleration : \(data.userAcceleration), gravity: \(data.gravity)"
@@ -154,6 +165,8 @@ func subscribeSensor(type:SKSensorType, typeName: String) {
                 case .Location:
                     let data = sensorData as! SKLocationData
                     self.allSensorType[index].data = "location: \(data.location)"
+//                    self.addToFile(string: self.allSensorType[index].data + Date().description)
+                    self.addToFile(string: " Location")
                 case .Heading:
                     let data = sensorData as! SKHeadingData
                     self.allSensorType[index].data = "heading: \(data.heading)"
@@ -187,8 +200,7 @@ func subscribeSensor(type:SKSensorType, typeName: String) {
                 }
                 self.allSensorType[index].prevDate = Date()
 
-                self.writeDataToFile(data: Date().description)
-                self.readDataFromFile()
+                
             }
         })
     }
