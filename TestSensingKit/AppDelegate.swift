@@ -1,99 +1,235 @@
 //
 //  AppDelegate.swift
-//  TestSensingKit
+//  CoreLocationTest
 //
-//  Created by Ксения Шкуренко on 01.10.2020.
+//  Created by Ксения Шкуренко on 11.10.2020.
 //
 
 import UIKit
-//import DropDown
-//import GooglePlaces
+import CoreData
+import CoreLocation
+import CoreMotion
 
+fileprivate let fileName = "Test"
 
-@UIApplicationMain
+@main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    var window: UIWindow?
-    var navigationController: UINavigationController?
-    let loginVCIdentifier = "LoginViewController"
-    let containerVCIdentifier = "ContainerViewController"
-    let homeVCIdentifier = "HomeViewController"
+    lazy var applicationDocumentsDirectory: NSURL = {
+        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return urls[urls.count-1] as NSURL
+    }()
     
-    let googleMapsApiKey = "AIzaSyBKQI1fv2mUXURpaQGFztfT0U9yOTM0yUE"
+    lazy var managedObjectModel: NSManagedObjectModel? = {
+        guard let modelURL = Bundle.main.url(forResource: "SensorsDataModel", withExtension: "momd") else { return nil }
+        return NSManagedObjectModel(contentsOf: modelURL)
+    }()
+    
+    lazy var managedObjectContext: NSManagedObjectContext = {
+        let coordinator = self.persistentStoreCoordinator
+        var managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        managedObjectContext.persistentStoreCoordinator = coordinator
+        return managedObjectContext
+    }()
+    
+    lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator? = {
+        guard let managedObjectModel =  self.managedObjectModel else { return nil }
+        let coordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+        let url = self.applicationDocumentsDirectory.appendingPathComponent("SingleViewCoreData.sqlite")
+        var failureReason = "There was an error creating or loading the application's saved data."
+        do {
+            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
+        } catch {
+            var dict = [String: AnyObject]()
+            dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data" as AnyObject
+            dict[NSLocalizedFailureReasonErrorKey] = failureReason as AnyObject
+     
+            dict[NSUnderlyingErrorKey] = error as NSError
+            let wrappedError = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
+            NSLog("Unresolved error \(wrappedError), \(wrappedError.userInfo)")
+            abort()
+        }
+         
+        return coordinator
+    }()
     
     
+    
+    let locationManager = CLLocationManager()
+    let motion = CMMotionManager()
+    var timer = Timer()
+    var tempString = ""
+    
+    var locationData = ""
+    var accelerometerData = ""
+    var gyroData = ""
+    var magnetoneterData = ""
+    
+    var prevDate: Date?
+    
+
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        startLocation()
+        startAccelerometers()
+        startMagnetometer()
+        startGyros()
         
-        
-        window = UIWindow()
-                
-//        if UserProfile.shared.token?.isEmpty ?? true {
-//            let startViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: loginVCIdentifier) as! LoginViewController
-//            navigationController = UINavigationController(rootViewController: startViewController)
-//
-//        } else {
-//            let startViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: containerVCIdentifier) as! ContainerViewController
-//            startViewController.identifier = .home
-//            navigationController = UINavigationController(rootViewController: startViewController)
-//        }
-        
-        // Override point for customization after application launch.
-        
-                    let startViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ViewController") as! ViewController
-                    navigationController = UINavigationController(rootViewController: startViewController)
-        navigationController?.navigationBar.isHidden = true
-        window?.rootViewController = navigationController
-        window?.makeKeyAndVisible()
-                
         return true
     }
     
-    func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+    // MARK: UISceneSession Lifecycle
+    
+    @available(iOS 13.0, *)
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        // Called when a new scene session is being created.
+        // Use this method to select a configuration to create the new scene with.
+        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
     
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    }
-    
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-    }
-    
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    }
-    
-    func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    @available(iOS 13.0, *)
+    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
+        // Called when the user discards a scene session.
+        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
+        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
     
+    func startLocation() {
+        locationManager.delegate = self
+        locationManager.showsBackgroundLocationIndicator = true
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestAlwaysAuthorization()
+        locationManager.startUpdatingLocation()
+    }
     
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        // 1. Convert device token to string
-        let tokenParts = deviceToken.map { data -> String in
-            return String(format: "%02.2hhx", data)
+    func startAccelerometers() {
+        // Make sure the accelerometer hardware is available.
+        if self.motion.isAccelerometerAvailable {
+            self.motion.accelerometerUpdateInterval = 1  // 1.0 / 60.0 = 60 Hz
+            self.motion.startAccelerometerUpdates(to: OperationQueue.main) { (data, error) in
+                self.writeAccelerometerData()
+            }
         }
-        let token = tokenParts.joined()
-        // 2. Print device token to use for PNs payloads
-        print("Device Token: \(token)")
-        let bundleID = Bundle.main.bundleIdentifier;
-        print("Bundle ID: \(token) \(String(describing: bundleID))");
-        // 3. Save the token to local storeage and post to app server to generate Push Notification. ...
     }
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("failed to register for remote notifications: \(error.localizedDescription)")
+    
+    func startGyros() {
+        if motion.isGyroAvailable {
+            self.motion.gyroUpdateInterval = 1
+            self.motion.startGyroUpdates(to: OperationQueue.main) { (data, error) in
+                self.writeGyroData()
+            }
+        }
     }
-
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        print("Received push notification: \(userInfo)")
-        let aps = userInfo["aps"] as! [String: Any]
-        print("\(aps)")
+    
+    func startMagnetometer () {
+        if motion.isMagnetometerAvailable {
+            motion.magnetometerUpdateInterval = 1
+            motion.startMagnetometerUpdates(to: OperationQueue.main) { (data, error) in
+                self.writeMagnetometerData()
+            }
+        }
     }
+    
+    func stopSensors() {
+        self.timer.invalidate()
+        self.motion.stopGyroUpdates()
+        self.motion.stopAccelerometerUpdates()
+        self.motion.stopMagnetometerUpdates()
+        self.locationManager.stopUpdatingLocation()
+    }
+    
+    func writeGyroData() {
+        // Get the gyro data.
+        if let data = self.motion.gyroData {
+            let x = data.rotationRate.x
+            let y = data.rotationRate.y
+            let z = data.rotationRate.z
+            self.gyroData = "Gyroscope: x:\(x), y:\(y), z:\(z)"
+        }
+    }
+    
+    func writeAccelerometerData() {
+        // Get the acceleration data.
+        if let data = self.motion.accelerometerData {
+            let x = data.acceleration.x
+            let y = data.acceleration.y
+            let z = data.acceleration.z
+            self.accelerometerData = "Acceleration: x:\(x), y:\(y), z:\(z)"
+        }
+    }
+    
+    func writeMagnetometerData() {
+        // Get the magnetometer data.
+        if let data = self.motion.magnetometerData {
+            let x = data.magneticField.x
+            let y = data.magneticField.y
+            let z = data.magneticField.z
+            self.magnetoneterData = "Magnetometer: x:\(x), y:\(y), z:\(z)"
+        }
+    }
+    
     
     
 }
+
+extension AppDelegate: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways {
+            print("Access to location granted")
+            
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            addToFile(string: "Location is \(location)")
+            
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("location error", error.localizedDescription)
+    }
+}
+
+extension AppDelegate {
+    func addToFile(string: String) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
+        
+        let motionSensorDate = "\n\(gyroData), \n\(magnetoneterData), \n\(accelerometerData), \n\(string)\n\n"
+        var data = dateFormatter.string(from: Date()) + motionSensorDate
+        if let previousData = self.readDataFromFile() {
+            data = data + previousData
+        }
+        self.writeDataToFile(data: data)
+        
+    }
+    
+    func writeDataToFile(data: String) -> Bool {
+        do {
+            let documentDirURL = try FileManager.default.url(for: .allLibrariesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            let fileURL = documentDirURL.appendingPathComponent(fileName).appendingPathExtension("txt")
+            try data.write(to: fileURL, atomically: true, encoding: String.Encoding.utf8)
+            return true
+        } catch (let error) {
+            print(error.localizedDescription)
+        }
+        return false
+    }
+    
+    func readDataFromFile() -> String? {
+        do {
+            let documentDirURL = try FileManager.default.url(for: .allLibrariesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            let fileURL = documentDirURL.appendingPathComponent(fileName).appendingPathExtension("txt")
+            return try String(contentsOf: fileURL)
+        } catch (let error) {
+            print(error.localizedDescription)
+        }
+        return nil
+    }
+}
+
