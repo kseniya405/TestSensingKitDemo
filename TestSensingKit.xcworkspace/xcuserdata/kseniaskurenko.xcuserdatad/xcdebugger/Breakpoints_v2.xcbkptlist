@@ -266,8 +266,8 @@
             filePath = "TestSensingKit/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "205"
-            endingLineNumber = "205"
+            startingLineNumber = "173"
+            endingLineNumber = "173"
             landmarkName = "addToFile(string:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -282,8 +282,8 @@
             filePath = "TestSensingKit/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "118"
-            endingLineNumber = "118"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
             landmarkName = "startGyros()"
             landmarkType = "7">
          </BreakpointContent>
@@ -298,8 +298,8 @@
             filePath = "TestSensingKit/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
             landmarkName = "startGyros()"
             landmarkType = "7">
          </BreakpointContent>
@@ -314,8 +314,8 @@
             filePath = "TestSensingKit/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "120"
-            endingLineNumber = "120"
+            startingLineNumber = "88"
+            endingLineNumber = "88"
             landmarkName = "startGyros()"
             landmarkType = "7">
          </BreakpointContent>
@@ -330,8 +330,8 @@
             filePath = "TestSensingKit/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
+            startingLineNumber = "90"
+            endingLineNumber = "90"
             landmarkName = "startGyros()"
             landmarkType = "7">
          </BreakpointContent>
@@ -346,8 +346,8 @@
             filePath = "TestSensingKit/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "114"
-            endingLineNumber = "114"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
             landmarkName = "startAccelerometers()"
             landmarkType = "7">
          </BreakpointContent>
@@ -362,8 +362,8 @@
             filePath = "TestSensingKit/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
             landmarkName = "startLocation()"
             landmarkType = "7">
          </BreakpointContent>
@@ -378,8 +378,8 @@
             filePath = "TestSensingKit/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
             landmarkName = "AppDelegate"
             landmarkType = "3">
          </BreakpointContent>
