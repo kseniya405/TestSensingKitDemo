@@ -8,16 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		14689931A9E012A2C9CEF740 /* Pods_TestSensingKitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C39221DA0416F000CED6855 /* Pods_TestSensingKitTests.framework */; };
-		964BA558254357B8000B931B /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964BA557254357B8000B931B /* Functions.swift */; };
-		964BA55D254358A2000B931B /* PersistentContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964BA55C254358A2000B931B /* PersistentContainer.swift */; };
-		964BA56225435919000B931B /* Sensors+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964BA56125435919000B931B /* Sensors+CoreDataClass.swift */; };
-		964BA56725435961000B931B /* Sensors+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964BA56625435961000B931B /* Sensors+CoreDataProperties.swift */; };
-		967422C9253CEF8D0012B30B /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967422C8253CEF8D0012B30B /* CoreDataManager.swift */; };
-		967422D2253CF0ED0012B30B /* SensorDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 967422D0253CF0ED0012B30B /* SensorDataModel.xcdatamodeld */; };
+		9637A45925443F1C00B00B30 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9637A45825443F1C00B00B30 /* CoreDataManager.swift */; };
+		9637A46525444D8A00B00B30 /* LocationModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9637A46325444D8A00B00B30 /* LocationModel.xcdatamodeld */; };
 		9679E079253B9CD600EAB3A7 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9679E078253B9CD600EAB3A7 /* TextViewController.swift */; };
 		96A2D99525266B1900EEA0C0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99425266B1900EEA0C0 /* AppDelegate.swift */; };
 		96A2D99725266B1900EEA0C0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99625266B1900EEA0C0 /* SceneDelegate.swift */; };
-		96A2D99925266B1900EEA0C0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99825266B1900EEA0C0 /* ViewController.swift */; };
 		96A2D99C25266B1900EEA0C0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96A2D99A25266B1900EEA0C0 /* Main.storyboard */; };
 		96A2D99E25266B1B00EEA0C0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96A2D99D25266B1B00EEA0C0 /* Assets.xcassets */; };
 		96A2D9A125266B1B00EEA0C0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96A2D99F25266B1B00EEA0C0 /* LaunchScreen.storyboard */; };
@@ -58,18 +53,13 @@
 		301807055537BA951EF305A0 /* Pods-TestSensingKitUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKitUITests.debug.xcconfig"; path = "Target Support Files/Pods-TestSensingKitUITests/Pods-TestSensingKitUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		7BD60DA25F6FF5C1D63CE918 /* Pods-TestSensingKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKit.release.xcconfig"; path = "Target Support Files/Pods-TestSensingKit/Pods-TestSensingKit.release.xcconfig"; sourceTree = "<group>"; };
 		864B97D58559D0879C7791F1 /* Pods_TestSensingKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestSensingKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		964BA557254357B8000B931B /* Functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
-		964BA55C254358A2000B931B /* PersistentContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentContainer.swift; sourceTree = "<group>"; };
-		964BA56125435919000B931B /* Sensors+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sensors+CoreDataClass.swift"; sourceTree = "<group>"; };
-		964BA56625435961000B931B /* Sensors+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sensors+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		966747AE253BA9AC00C050F8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		967422C8253CEF8D0012B30B /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
-		967422D1253CF0ED0012B30B /* LocationDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LocationDataModel.xcdatamodel; sourceTree = "<group>"; };
+		9637A45825443F1C00B00B30 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		9637A46425444D8A00B00B30 /* LocationModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LocationModel.xcdatamodel; sourceTree = "<group>"; };
+		966747AE253BA9AC00C050F8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		9679E078253B9CD600EAB3A7 /* TextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
 		96A2D99125266B1900EEA0C0 /* TestSensingKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestSensingKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A2D99425266B1900EEA0C0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96A2D99625266B1900EEA0C0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		96A2D99825266B1900EEA0C0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		96A2D99B25266B1900EEA0C0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		96A2D99D25266B1B00EEA0C0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		96A2D9A025266B1B00EEA0C0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -118,10 +108,8 @@
 		96742241253C3A4F0012B30B /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				967422D0253CF0ED0012B30B /* SensorDataModel.xcdatamodeld */,
-				967422C8253CEF8D0012B30B /* CoreDataManager.swift */,
-				964BA557254357B8000B931B /* Functions.swift */,
-				964BA55C254358A2000B931B /* PersistentContainer.swift */,
+				9637A45825443F1C00B00B30 /* CoreDataManager.swift */,
+				9637A46325444D8A00B00B30 /* LocationModel.xcdatamodeld */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -129,8 +117,6 @@
 		96A2D98825266B1900EEA0C0 = {
 			isa = PBXGroup;
 			children = (
-				964BA56625435961000B931B /* Sensors+CoreDataProperties.swift */,
-				964BA56125435919000B931B /* Sensors+CoreDataClass.swift */,
 				96A2D99325266B1900EEA0C0 /* TestSensingKit */,
 				96A2D99D25266B1B00EEA0C0 /* Assets.xcassets */,
 				966747AE253BA9AC00C050F8 /* Info.plist */,
@@ -159,7 +145,6 @@
 				96742241253C3A4F0012B30B /* CoreData */,
 				96A2D99425266B1900EEA0C0 /* AppDelegate.swift */,
 				96A2D99625266B1900EEA0C0 /* SceneDelegate.swift */,
-				96A2D99825266B1900EEA0C0 /* ViewController.swift */,
 				96FFA002252A49E200CFD96A /* UserDefaults.swift */,
 				96A2D99A25266B1900EEA0C0 /* Main.storyboard */,
 				9679E078253B9CD600EAB3A7 /* TextViewController.swift */,
@@ -433,17 +418,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96A2D99925266B1900EEA0C0 /* ViewController.swift in Sources */,
 				96FFA003252A49E200CFD96A /* UserDefaults.swift in Sources */,
-				964BA55D254358A2000B931B /* PersistentContainer.swift in Sources */,
-				964BA558254357B8000B931B /* Functions.swift in Sources */,
-				967422D2253CF0ED0012B30B /* SensorDataModel.xcdatamodeld in Sources */,
 				96A2D99525266B1900EEA0C0 /* AppDelegate.swift in Sources */,
-				967422C9253CEF8D0012B30B /* CoreDataManager.swift in Sources */,
 				96A2D99725266B1900EEA0C0 /* SceneDelegate.swift in Sources */,
-				964BA56725435961000B931B /* Sensors+CoreDataProperties.swift in Sources */,
+				9637A46525444D8A00B00B30 /* LocationModel.xcdatamodeld in Sources */,
 				96A2D9D7252911BF00EEA0C0 /* SensorDataTableViewCell.swift in Sources */,
-				964BA56225435919000B931B /* Sensors+CoreDataClass.swift in Sources */,
+				9637A45925443F1C00B00B30 /* CoreDataManager.swift in Sources */,
 				9679E079253B9CD600EAB3A7 /* TextViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -815,13 +795,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		967422D0253CF0ED0012B30B /* SensorDataModel.xcdatamodeld */ = {
+		9637A46325444D8A00B00B30 /* LocationModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				967422D1253CF0ED0012B30B /* LocationDataModel.xcdatamodel */,
+				9637A46425444D8A00B00B30 /* LocationModel.xcdatamodel */,
 			);
-			currentVersion = 967422D1253CF0ED0012B30B /* LocationDataModel.xcdatamodel */;
-			path = SensorDataModel.xcdatamodeld;
+			currentVersion = 9637A46425444D8A00B00B30 /* LocationModel.xcdatamodel */;
+			path = LocationModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

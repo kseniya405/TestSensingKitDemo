@@ -15,10 +15,6 @@ fileprivate let fileName = "Test"
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-
-    
-    
-    
     let locationManager = CLLocationManager()
     let motion = CMMotionManager()
     var timer = Timer()
@@ -31,13 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var prevDate: Date?
     
-
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        let coreDataManager = CoreDataManager(modelName: "SensorDataModel")
-        print(coreDataManager.managedObjectContext)
-        
+        CoreDataManager.shared.initalizeStackIfNeeded()
         startLocation()
         startAccelerometers()
         startMagnetometer()
@@ -62,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     
-    
+    //MARK: start sensors updates
     func startLocation() {
         locationManager.delegate = self
         locationManager.showsBackgroundLocationIndicator = true
@@ -109,33 +101,79 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.locationManager.stopUpdatingLocation()
     }
     
+    //MARK: Write sensors data
     func writeGyroData() {
-        // Get the gyro data.
         if let data = self.motion.gyroData {
             let x = data.rotationRate.x
             let y = data.rotationRate.y
             let z = data.rotationRate.z
-            self.gyroData = "Gyroscope: x:\(x), y:\(y), z:\(z)"
+            
+            do {
+                guard let lastElement = try CoreDataManager.shared.getLastGyro().first,
+                      !(lastElement.x == Float.init(x) && lastElement.y == Float.init(y) && lastElement.z == Float.init(z)) else { return }
+                do {
+                    try CoreDataManager.shared.insertGyro(data)
+                }
+                catch {
+                    print("Can't write data to CoreData")
+                }
+                
+                self.gyroData = "Gyroscope: x:\(x), y:\(y), z:\(z)"
+            }
+            catch {
+                print("Can't write last Gyroscope element from CoreData")
+            }
         }
     }
     
     func writeAccelerometerData() {
-        // Get the acceleration data.
         if let data = self.motion.accelerometerData {
             let x = data.acceleration.x
             let y = data.acceleration.y
             let z = data.acceleration.z
-            self.accelerometerData = "Acceleration: x:\(x), y:\(y), z:\(z)"
+            
+            do {
+                guard let lastElement = try CoreDataManager.shared.getLastAccelerometer().first,
+                      !(lastElement.x == Float.init(x) && lastElement.y == Float.init(y) && lastElement.z == Float.init(z)) else { return }
+                
+                do {
+                    try CoreDataManager.shared.insertAccelerometer(data)
+                }
+                catch {
+                    print("Can't write data to CoreData")
+                }
+                
+                self.accelerometerData = "Acceleration: x:\(x), y:\(y), z:\(z)"
+            }
+            catch {
+                print("Can't write last acceleration element from CoreData")
+            }
+            
         }
     }
     
     func writeMagnetometerData() {
-        // Get the magnetometer data.
         if let data = self.motion.magnetometerData {
+            
             let x = data.magneticField.x
             let y = data.magneticField.y
             let z = data.magneticField.z
+            
+            do {
+                guard let lastElement = try CoreDataManager.shared.getLastMagnetometer().first,
+                      !(lastElement.x == Float.init(x) && lastElement.y == Float.init(y) && lastElement.z == Float.init(z)) else { return }
+            do {
+                try CoreDataManager.shared.insertMagnetometer(data)
+            }
+            catch {
+                print("Can't write data to CoreData")
+            }
+            
             self.magnetoneterData = "Magnetometer: x:\(x), y:\(y), z:\(z)"
+            }
+            catch {
+                print("Can't write last magnetoneter element from CoreData")
+            }
         }
     }
     
@@ -143,6 +181,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
 }
 
+//MARK: CLLocationManagerDelegate
 extension AppDelegate: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedAlways {
@@ -153,6 +192,13 @@ extension AppDelegate: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
+            CoreDataManager.shared.initalizeStackIfNeeded()
+            do {
+                try CoreDataManager.shared.insertLocation(location)
+            }
+            catch {
+                print("Can't write data to CoreData")
+            }
             addToFile(string: "Location is \(location)")
             
         }
@@ -163,6 +209,8 @@ extension AppDelegate: CLLocationManagerDelegate {
     }
 }
 
+
+//MARK: write/read text file
 extension AppDelegate {
     func addToFile(string: String) {
         let dateFormatter = DateFormatter()
@@ -199,4 +247,5 @@ extension AppDelegate {
         }
         return nil
     }
+    
 }
