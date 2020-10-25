@@ -2,7 +2,7 @@
 //  LocationSensorEntity+CoreDataProperties.swift
 //  
 //
-//  Created by Kseniia Shkurenko on 24.10.2020.
+//  Created by Kseniia Shkurenko on 25.10.2020.
 //
 //
 
@@ -16,9 +16,9 @@ extension LocationSensorEntity {
         return NSFetchRequest<LocationSensorEntity>(entityName: "LocationSensorEntity")
     }
 
-    @NSManaged public var date: Date?
     @NSManaged public var altitude: Float
-    @NSManaged public var longtitude: Float
+    @NSManaged public var date: Date?
     @NSManaged public var latitude: Float
+    @NSManaged public var longtitude: Float
 
 }

@@ -107,10 +107,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let x = data.rotationRate.x
             let y = data.rotationRate.y
             let z = data.rotationRate.z
-            
+            CoreDataManager.shared.initalizeStackIfNeeded()
             do {
-                guard let lastElement = try CoreDataManager.shared.getLastGyro().first,
-                      !(lastElement.x == Float.init(x) && lastElement.y == Float.init(y) && lastElement.z == Float.init(z)) else { return }
+                let lastElement = try CoreDataManager.shared.getLastGyro()
+                if (lastElement?.x == Float.init(x) && lastElement?.y == Float.init(y) && lastElement?.z == Float.init(z)) { return }
                 do {
                     try CoreDataManager.shared.insertGyro(data)
                 }
@@ -131,10 +131,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let x = data.acceleration.x
             let y = data.acceleration.y
             let z = data.acceleration.z
-            
+            CoreDataManager.shared.initalizeStackIfNeeded()
             do {
-                guard let lastElement = try CoreDataManager.shared.getLastAccelerometer().first,
-                      !(lastElement.x == Float.init(x) && lastElement.y == Float.init(y) && lastElement.z == Float.init(z)) else { return }
+                let lastElement = try CoreDataManager.shared.getLastAccelerometer()
+                if (lastElement?.x == Float.init(x) && lastElement?.y == Float.init(y) && lastElement?.z == Float.init(z)) { return }
                 
                 do {
                     try CoreDataManager.shared.insertAccelerometer(data)
@@ -158,18 +158,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let x = data.magneticField.x
             let y = data.magneticField.y
             let z = data.magneticField.z
-            
+            CoreDataManager.shared.initalizeStackIfNeeded()
             do {
-                guard let lastElement = try CoreDataManager.shared.getLastMagnetometer().first,
-                      !(lastElement.x == Float.init(x) && lastElement.y == Float.init(y) && lastElement.z == Float.init(z)) else { return }
-            do {
-                try CoreDataManager.shared.insertMagnetometer(data)
-            }
-            catch {
-                print("Can't write data to CoreData")
-            }
-            
-            self.magnetoneterData = "Magnetometer: x:\(x), y:\(y), z:\(z)"
+                let lastElement = try CoreDataManager.shared.getLastMagnetometer()
+                if (lastElement?.x == Float.init(x) && lastElement?.y == Float.init(y) && lastElement?.z == Float.init(z)) { return }
+                do {
+                    try CoreDataManager.shared.insertMagnetometer(data)
+                }
+                catch {
+                    print("Can't write data to CoreData")
+                }
+                
+                self.magnetoneterData = "Magnetometer: x:\(x), y:\(y), z:\(z)"
             }
             catch {
                 print("Can't write last magnetoneter element from CoreData")
@@ -194,12 +194,21 @@ extension AppDelegate: CLLocationManagerDelegate {
         if let location = locations.last {
             CoreDataManager.shared.initalizeStackIfNeeded()
             do {
-                try CoreDataManager.shared.insertLocation(location)
+                let lastElement = try CoreDataManager.shared.getLastLocation()
+                if (lastElement?.latitude == Float.init(location.coordinate.latitude)
+                            && lastElement?.longtitude == Float.init(location.coordinate.longitude)
+                            && lastElement?.altitude == Float.init(location.altitude)) { return }
+                do {
+                    try CoreDataManager.shared.insertLocation(location)
+                }
+                catch {
+                    print("Can't write data to CoreData")
+                }
             }
             catch {
-                print("Can't write data to CoreData")
+                print("Can't write last magnetoneter element from CoreData")
             }
-            addToFile(string: "Location is \(location)")
+            //            addToFile(string: "Location is \(location)")
             
         }
     }

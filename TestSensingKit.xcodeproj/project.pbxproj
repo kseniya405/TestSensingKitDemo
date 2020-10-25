@@ -10,6 +10,7 @@
 		14689931A9E012A2C9CEF740 /* Pods_TestSensingKitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C39221DA0416F000CED6855 /* Pods_TestSensingKitTests.framework */; };
 		9637A45925443F1C00B00B30 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9637A45825443F1C00B00B30 /* CoreDataManager.swift */; };
 		9637A46525444D8A00B00B30 /* LocationModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9637A46325444D8A00B00B30 /* LocationModel.xcdatamodeld */; };
+		9637A4882545CF5700B00B30 /* Data+dataToFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9637A4872545CF5700B00B30 /* Data+dataToFile.swift */; };
 		9679E079253B9CD600EAB3A7 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9679E078253B9CD600EAB3A7 /* TextViewController.swift */; };
 		96A2D99525266B1900EEA0C0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99425266B1900EEA0C0 /* AppDelegate.swift */; };
 		96A2D99725266B1900EEA0C0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99625266B1900EEA0C0 /* SceneDelegate.swift */; };
@@ -55,6 +56,7 @@
 		864B97D58559D0879C7791F1 /* Pods_TestSensingKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestSensingKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9637A45825443F1C00B00B30 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		9637A46425444D8A00B00B30 /* LocationModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LocationModel.xcdatamodel; sourceTree = "<group>"; };
+		9637A4872545CF5700B00B30 /* Data+dataToFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+dataToFile.swift"; sourceTree = "<group>"; };
 		966747AE253BA9AC00C050F8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		9679E078253B9CD600EAB3A7 /* TextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
 		96A2D99125266B1900EEA0C0 /* TestSensingKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestSensingKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +107,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9637A4862545CF0E00B00B30 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				9637A4872545CF5700B00B30 /* Data+dataToFile.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		96742241253C3A4F0012B30B /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -142,6 +152,7 @@
 		96A2D99325266B1900EEA0C0 /* TestSensingKit */ = {
 			isa = PBXGroup;
 			children = (
+				9637A4862545CF0E00B00B30 /* Extensions */,
 				96742241253C3A4F0012B30B /* CoreData */,
 				96A2D99425266B1900EEA0C0 /* AppDelegate.swift */,
 				96A2D99625266B1900EEA0C0 /* SceneDelegate.swift */,
@@ -420,6 +431,7 @@
 			files = (
 				96FFA003252A49E200CFD96A /* UserDefaults.swift in Sources */,
 				96A2D99525266B1900EEA0C0 /* AppDelegate.swift in Sources */,
+				9637A4882545CF5700B00B30 /* Data+dataToFile.swift in Sources */,
 				96A2D99725266B1900EEA0C0 /* SceneDelegate.swift in Sources */,
 				9637A46525444D8A00B00B30 /* LocationModel.xcdatamodeld in Sources */,
 				96A2D9D7252911BF00EEA0C0 /* SensorDataTableViewCell.swift in Sources */,

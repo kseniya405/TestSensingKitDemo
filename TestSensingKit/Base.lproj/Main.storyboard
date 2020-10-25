@@ -55,45 +55,64 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aSn-IP-iHN">
-                                <rect key="frame" x="329" y="809" width="53" height="53"/>
-                                <color key="backgroundColor" systemColor="systemGray2Color"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Mnj-xa-6d3">
+                                <rect key="frame" x="25" y="816" width="364" height="46"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4H-P8-4bZ">
+                                        <rect key="frame" x="0.0" y="0.0" width="114.5" height="46"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                        <state key="normal" title="Delete">
+                                            <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="deleteButtonDidTap:" destination="wCe-As-Prk" eventType="touchUpInside" id="gFe-pJ-qjT"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mGA-6j-ygF">
+                                        <rect key="frame" x="124.5" y="0.0" width="115" height="46"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <size key="titleShadowOffset" width="1" height="1"/>
+                                        <state key="normal" title="Export">
+                                            <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="exportButtonDidTap:" destination="wCe-As-Prk" eventType="touchUpInside" id="J4C-aT-TTg"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aSn-IP-iHN">
+                                        <rect key="frame" x="249.5" y="0.0" width="114.5" height="46"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="46" id="fTJ-dM-hoB"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                        <state key="normal" title="Update">
+                                            <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="updateButtonDidTap:" destination="wCe-As-Prk" eventType="touchUpInside" id="Fm8-Uy-t29"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="aSn-IP-iHN" secondAttribute="height" multiplier="1:1" id="1jF-Al-jwq"/>
+                                    <constraint firstItem="N4H-P8-4bZ" firstAttribute="width" secondItem="mGA-6j-ygF" secondAttribute="width" id="7ib-uW-d9D"/>
+                                    <constraint firstItem="N4H-P8-4bZ" firstAttribute="width" secondItem="aSn-IP-iHN" secondAttribute="width" id="GjX-Up-WbT"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                                <state key="normal" title="Update">
-                                    <color key="titleColor" systemColor="linkColor"/>
-                                </state>
-                                <connections>
-                                    <action selector="updateButtonDidTap:" destination="wCe-As-Prk" eventType="touchUpInside" id="Fm8-Uy-t29"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N4H-P8-4bZ">
-                                <rect key="frame" x="32" y="809" width="53" height="53"/>
-                                <color key="backgroundColor" systemColor="systemGray2Color"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                                <state key="normal" title="Delete">
-                                    <color key="titleColor" systemColor="linkColor"/>
-                                </state>
-                                <connections>
-                                    <action selector="deleteButtonDidTap:" destination="wCe-As-Prk" eventType="touchUpInside" id="gFe-pJ-qjT"/>
-                                </connections>
-                            </button>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="T46-Ur-P7L"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="N4H-P8-4bZ" firstAttribute="bottom" secondItem="aSn-IP-iHN" secondAttribute="bottom" id="ALP-dk-ojH"/>
-                            <constraint firstItem="N4H-P8-4bZ" firstAttribute="leading" secondItem="T46-Ur-P7L" secondAttribute="leading" constant="32" id="BFE-uq-kDi"/>
                             <constraint firstItem="sbD-Zn-NLK" firstAttribute="centerY" secondItem="T46-Ur-P7L" secondAttribute="centerY" id="BFy-y3-doF"/>
-                            <constraint firstItem="N4H-P8-4bZ" firstAttribute="height" secondItem="aSn-IP-iHN" secondAttribute="height" id="L6K-X7-Xer"/>
                             <constraint firstItem="sbD-Zn-NLK" firstAttribute="width" secondItem="aln-Fi-SPl" secondAttribute="width" constant="-40" id="QEa-JW-2pd"/>
+                            <constraint firstItem="T46-Ur-P7L" firstAttribute="trailing" secondItem="Mnj-xa-6d3" secondAttribute="trailing" constant="25" id="YNa-Rl-VHN"/>
                             <constraint firstItem="sbD-Zn-NLK" firstAttribute="centerX" secondItem="T46-Ur-P7L" secondAttribute="centerX" id="ZSl-8c-ZZ2"/>
+                            <constraint firstItem="Mnj-xa-6d3" firstAttribute="leading" secondItem="T46-Ur-P7L" secondAttribute="leading" constant="25" id="ahV-kE-s6H"/>
                             <constraint firstItem="sbD-Zn-NLK" firstAttribute="height" secondItem="aln-Fi-SPl" secondAttribute="height" constant="-60" id="c1W-Rn-8xt"/>
-                            <constraint firstItem="T46-Ur-P7L" firstAttribute="bottom" secondItem="aSn-IP-iHN" secondAttribute="bottom" id="nH4-Ob-WW1"/>
-                            <constraint firstItem="T46-Ur-P7L" firstAttribute="trailing" secondItem="aSn-IP-iHN" secondAttribute="trailing" constant="32" id="nd2-Zd-JVH"/>
-                            <constraint firstItem="N4H-P8-4bZ" firstAttribute="width" secondItem="aSn-IP-iHN" secondAttribute="width" id="y3z-FE-1SR"/>
+                            <constraint firstItem="T46-Ur-P7L" firstAttribute="bottom" secondItem="Mnj-xa-6d3" secondAttribute="bottom" id="tbF-EF-Y5n"/>
                         </constraints>
                     </view>
                     <connections>
@@ -106,14 +125,8 @@
         </scene>
     </scenes>
     <resources>
-        <systemColor name="linkColor">
-            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemGray2Color">
-            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

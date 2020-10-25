@@ -33,7 +33,8 @@ class CoreDataManager {
             }
         }
     }
-    
+
+//MARK: Location
     func insertLocation(_ locationObject: CLLocation) throws {
         let location = LocationSensorEntity(context: self.context)
         location.latitude = Float(locationObject.coordinate.latitude)
@@ -56,14 +57,15 @@ class CoreDataManager {
         try self.context.save()
     }
     
-    func getLastLocation() throws -> [LocationSensorEntity] {
+    func getLastLocation() throws -> LocationSensorEntity? {
         let fetchRequest = LocationSensorEntity.fetchRequest() as NSFetchRequest<LocationSensorEntity>
         let sort = NSSortDescriptor(key: "date", ascending: false)
         fetchRequest.sortDescriptors = [sort]
         fetchRequest.fetchLimit = 1
-        return try self.context.fetch(fetchRequest)
+        return try self.context.fetch(fetchRequest).first
     }
-    
+
+//MARK: Gyroscope
     func insertGyro(_ data: CMGyroData) throws {
         let gyro = GyroscopeSensorEntity(context: self.context)
         gyro.x = Float(data.rotationRate.x)
@@ -86,14 +88,15 @@ class CoreDataManager {
         try self.context.save()
     }
     
-    func getLastGyro() throws -> [GyroscopeSensorEntity] {
+    func getLastGyro() throws -> GyroscopeSensorEntity? {
         let fetchRequest = GyroscopeSensorEntity.fetchRequest() as NSFetchRequest<GyroscopeSensorEntity>
         let sort = NSSortDescriptor(key: "date", ascending: false)
         fetchRequest.sortDescriptors = [sort]
         fetchRequest.fetchLimit = 1
-        return try self.context.fetch(fetchRequest)
+        return try self.context.fetch(fetchRequest).first
     }
-    
+
+//MARK: Accelerometer
     func insertAccelerometer(_ data: CMAccelerometerData) throws {
         let accelerometer = AccelerometerSensorEntity(context: self.context)
         accelerometer.x = Float(data.acceleration.x)
@@ -116,14 +119,15 @@ class CoreDataManager {
         try self.context.save()
     }
     
-    func getLastAccelerometer() throws -> [AccelerometerSensorEntity] {
+    func getLastAccelerometer() throws -> AccelerometerSensorEntity? {
         let fetchRequest = AccelerometerSensorEntity.fetchRequest() as NSFetchRequest<AccelerometerSensorEntity>
         let sort = NSSortDescriptor(key: "date", ascending: false)
         fetchRequest.sortDescriptors = [sort]
         fetchRequest.fetchLimit = 1
-        return try self.context.fetch(fetchRequest)
+        return try self.context.fetch(fetchRequest).first
     }
     
+//MARK: Magnetoneter
     func insertMagnetometer(_ data: CMMagnetometerData) throws {
         let magnetometer = MagnetometerSensorEntity(context: self.context)
         magnetometer.x = Float(data.magneticField.x)
@@ -146,11 +150,11 @@ class CoreDataManager {
         try self.context.save()
     }
     
-    func getLastMagnetometer() throws -> [MagnetometerSensorEntity] {
+    func getLastMagnetometer() throws -> MagnetometerSensorEntity? {
         let fetchRequest = MagnetometerSensorEntity.fetchRequest() as NSFetchRequest<MagnetometerSensorEntity>
         let sort = NSSortDescriptor(key: "date", ascending: false)
         fetchRequest.sortDescriptors = [sort]
         fetchRequest.fetchLimit = 1
-        return try self.context.fetch(fetchRequest)
+        return try self.context.fetch(fetchRequest).first
     }
 }

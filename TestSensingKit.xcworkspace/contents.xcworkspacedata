@@ -8,16 +8,16 @@
       location = "group:MagnetometerSensorEntity+CoreDataProperties.swift">
    </FileRef>
    <FileRef
-      location = "group:AccelerometerSensorEntity+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:AccelerometerSensorEntity+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
       location = "group:GyroscopeSensorEntity+CoreDataClass.swift">
    </FileRef>
    <FileRef
       location = "group:GyroscopeSensorEntity+CoreDataProperties.swift">
+   </FileRef>
+   <FileRef
+      location = "group:AccelerometerSensorEntity+CoreDataClass.swift">
+   </FileRef>
+   <FileRef
+      location = "group:AccelerometerSensorEntity+CoreDataProperties.swift">
    </FileRef>
    <FileRef
       location = "group:LocationSensorEntity+CoreDataClass.swift">

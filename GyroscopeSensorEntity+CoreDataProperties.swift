@@ -2,7 +2,7 @@
 //  GyroscopeSensorEntity+CoreDataProperties.swift
 //  
 //
-//  Created by Kseniia Shkurenko on 24.10.2020.
+//  Created by Kseniia Shkurenko on 25.10.2020.
 //
 //
 
