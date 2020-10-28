@@ -31,7 +31,19 @@ class TextViewController: UIViewController {
             dataTextView.contentInset.bottom = 55
         }
     }
-
+    @IBOutlet weak var stopUpdateButton: UIButton! {
+        didSet {
+            stopUpdateButton.addTarget(self, action: #selector(stopUpdateButtonDidTap), for: .touchUpInside)
+            stopUpdateButton.setTitleColor(.gray, for: .normal)
+        }
+    }
+    @IBOutlet weak var startUpdateButton: UIButton! {
+        didSet {
+            startUpdateButton.addTarget(self, action: #selector(startUpdateButtonDidTap), for: .touchUpInside)
+            startUpdateButton.setTitleColor(.black, for: .normal)
+        }
+    }
+    
     
     @IBAction func updateButtonDidTap(_ sender: Any) {
         dataTextView.text = readDataFromDatabase()
@@ -59,7 +71,7 @@ class TextViewController: UIViewController {
         let text = readDataFromDatabase()
         let textData = text.data(using: .utf8)
 
-        guard let textURL = textData?.dataToFile(fileName: "sensorsDataList.txt") else {return }
+        guard let textURL = textData?.dataToFile(fileName: "sensors_data_list.txt") else {return }
 
         var filesToShare = [Any]()
 
@@ -72,11 +84,27 @@ class TextViewController: UIViewController {
     
     var entities = [SensorsEntities]()
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        dataTextView.text = readDataFromFile()
-        
+        dataTextView.text = readDataFromDatabase()
+//        setSensorMask()
+    }
+    
+    @objc func stopUpdateButtonDidTap() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.stopSensors()
+        startUpdateButton.setTitleColor(.black, for: .normal)
+        stopUpdateButton.setTitleColor(.gray, for: .normal)
+    }
+    
+    @objc func startUpdateButtonDidTap() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.startSensors()
+        startUpdateButton.setTitleColor(.gray, for: .normal)
+        stopUpdateButton.setTitleColor(.black, for: .normal)
     }
 
     func readDataFromFile() -> String? {
@@ -164,6 +192,30 @@ class TextViewController: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "y-MM-dd H:m:ss.SSSS"
         return dateFormatter.string(from: date)
+    }
+    
+    
+    struct SensorsMask: OptionSet {
+     
+        let rawValue: UInt
+        
+        static let pressure = SensorsMask(rawValue: 1 << 0)
+        static let gyro = SensorsMask(rawValue: 1 << 1)
+        static let magnetometer = SensorsMask(rawValue: 1 << 2)
+        static let accelerometer = SensorsMask(rawValue: 1 << 3)
+        static let temperature = SensorsMask(rawValue: 1 << 4)
+        static let light = SensorsMask(rawValue: 1 << 5)
+        static let locationWiFi = SensorsMask(rawValue: 1 << 6)
+        static let locationGPS = SensorsMask(rawValue: 1 << 7)
+    }
+    
+    func setSensorMask() -> SensorsMask {
+        var mask: SensorsMask = []
+        mask.insert(.accelerometer)
+        mask.insert(.gyro)
+        mask.insert(.magnetometer)
+        mask.insert(.locationGPS)
+        return mask
     }
     
 
