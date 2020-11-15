@@ -3,14 +3,23 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		14689931A9E012A2C9CEF740 /* Pods_TestSensingKitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C39221DA0416F000CED6855 /* Pods_TestSensingKitTests.framework */; };
+		960E0227255991FE00900F65 /* CustomInts in Resources */ = {isa = PBXBuildFile; fileRef = 960E0226255991FE00900F65 /* CustomInts */; };
+		960E02382559984300900F65 /* UInt24.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960E02372559984300900F65 /* UInt24.swift */; };
 		9637A45925443F1C00B00B30 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9637A45825443F1C00B00B30 /* CoreDataManager.swift */; };
 		9637A46525444D8A00B00B30 /* LocationModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9637A46325444D8A00B00B30 /* LocationModel.xcdatamodeld */; };
 		9637A4882545CF5700B00B30 /* Data+dataToFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9637A4872545CF5700B00B30 /* Data+dataToFile.swift */; };
+		964EFBB9254DAF550078D920 /* Bundle+VersionNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964EFBB8254DAF550078D920 /* Bundle+VersionNumber.swift */; };
+		966B8E71255877F100C05DD3 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966B8E6B255877F100C05DD3 /* Common.swift */; };
+		966B8E72255877F100C05DD3 /* IntegerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966B8E6C255877F100C05DD3 /* IntegerType.swift */; };
+		966B8E73255877F100C05DD3 /* BinaryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966B8E6D255877F100C05DD3 /* BinaryData.swift */; };
+		966B8E74255877F100C05DD3 /* Tuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966B8E6E255877F100C05DD3 /* Tuple.swift */; };
+		966B8E75255877F100C05DD3 /* BinaryDataErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966B8E6F255877F100C05DD3 /* BinaryDataErrors.swift */; };
+		966B8E76255877F100C05DD3 /* BinaryDataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966B8E70255877F100C05DD3 /* BinaryDataReader.swift */; };
 		9679E079253B9CD600EAB3A7 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9679E078253B9CD600EAB3A7 /* TextViewController.swift */; };
 		96A2D99525266B1900EEA0C0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99425266B1900EEA0C0 /* AppDelegate.swift */; };
 		96A2D99725266B1900EEA0C0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A2D99625266B1900EEA0C0 /* SceneDelegate.swift */; };
@@ -54,10 +63,19 @@
 		301807055537BA951EF305A0 /* Pods-TestSensingKitUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKitUITests.debug.xcconfig"; path = "Target Support Files/Pods-TestSensingKitUITests/Pods-TestSensingKitUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		7BD60DA25F6FF5C1D63CE918 /* Pods-TestSensingKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestSensingKit.release.xcconfig"; path = "Target Support Files/Pods-TestSensingKit/Pods-TestSensingKit.release.xcconfig"; sourceTree = "<group>"; };
 		864B97D58559D0879C7791F1 /* Pods_TestSensingKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestSensingKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		960E0226255991FE00900F65 /* CustomInts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CustomInts; sourceTree = "<group>"; };
+		960E02372559984300900F65 /* UInt24.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UInt24.swift; sourceTree = "<group>"; };
 		9637A45825443F1C00B00B30 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		9637A46425444D8A00B00B30 /* LocationModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = LocationModel.xcdatamodel; sourceTree = "<group>"; };
 		9637A4872545CF5700B00B30 /* Data+dataToFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+dataToFile.swift"; sourceTree = "<group>"; };
+		964EFBB8254DAF550078D920 /* Bundle+VersionNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+VersionNumber.swift"; sourceTree = "<group>"; };
 		966747AE253BA9AC00C050F8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
+		966B8E6B255877F100C05DD3 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		966B8E6C255877F100C05DD3 /* IntegerType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegerType.swift; sourceTree = "<group>"; };
+		966B8E6D255877F100C05DD3 /* BinaryData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryData.swift; sourceTree = "<group>"; };
+		966B8E6E255877F100C05DD3 /* Tuple.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tuple.swift; sourceTree = "<group>"; };
+		966B8E6F255877F100C05DD3 /* BinaryDataErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryDataErrors.swift; sourceTree = "<group>"; };
+		966B8E70255877F100C05DD3 /* BinaryDataReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BinaryDataReader.swift; sourceTree = "<group>"; };
 		9679E078253B9CD600EAB3A7 /* TextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
 		96A2D99125266B1900EEA0C0 /* TestSensingKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestSensingKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A2D99425266B1900EEA0C0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -110,9 +128,26 @@
 		9637A4862545CF0E00B00B30 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				966B8E6A255877E000C05DD3 /* BinarySwift */,
 				9637A4872545CF5700B00B30 /* Data+dataToFile.swift */,
+				964EFBB8254DAF550078D920 /* Bundle+VersionNumber.swift */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		966B8E6A255877E000C05DD3 /* BinarySwift */ = {
+			isa = PBXGroup;
+			children = (
+				960E0226255991FE00900F65 /* CustomInts */,
+				966B8E6D255877F100C05DD3 /* BinaryData.swift */,
+				966B8E6F255877F100C05DD3 /* BinaryDataErrors.swift */,
+				966B8E70255877F100C05DD3 /* BinaryDataReader.swift */,
+				966B8E6B255877F100C05DD3 /* Common.swift */,
+				966B8E6C255877F100C05DD3 /* IntegerType.swift */,
+				966B8E6E255877F100C05DD3 /* Tuple.swift */,
+				960E02372559984300900F65 /* UInt24.swift */,
+			);
+			name = BinarySwift;
 			sourceTree = "<group>";
 		};
 		96742241253C3A4F0012B30B /* CoreData */ = {
@@ -217,7 +252,6 @@
 				96A2D98D25266B1900EEA0C0 /* Sources */,
 				96A2D98E25266B1900EEA0C0 /* Frameworks */,
 				96A2D98F25266B1900EEA0C0 /* Resources */,
-				38101B8B06B8B0639C89C6AD /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -317,6 +351,7 @@
 				96A2D99E25266B1B00EEA0C0 /* Assets.xcassets in Resources */,
 				96A2D99C25266B1900EEA0C0 /* Main.storyboard in Resources */,
 				96A2D9DA252911BF00EEA0C0 /* SensorDataTableViewCell.xib in Resources */,
+				960E0227255991FE00900F65 /* CustomInts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,23 +374,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		38101B8B06B8B0639C89C6AD /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TestSensingKit/Pods-TestSensingKit-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-TestSensingKit/Pods-TestSensingKit-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TestSensingKit/Pods-TestSensingKit-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		C64DAFA8AC79A0D6A9D7D3C0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -429,13 +447,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				966B8E72255877F100C05DD3 /* IntegerType.swift in Sources */,
 				96FFA003252A49E200CFD96A /* UserDefaults.swift in Sources */,
 				96A2D99525266B1900EEA0C0 /* AppDelegate.swift in Sources */,
 				9637A4882545CF5700B00B30 /* Data+dataToFile.swift in Sources */,
 				96A2D99725266B1900EEA0C0 /* SceneDelegate.swift in Sources */,
 				9637A46525444D8A00B00B30 /* LocationModel.xcdatamodeld in Sources */,
+				966B8E76255877F100C05DD3 /* BinaryDataReader.swift in Sources */,
+				964EFBB9254DAF550078D920 /* Bundle+VersionNumber.swift in Sources */,
+				966B8E74255877F100C05DD3 /* Tuple.swift in Sources */,
 				96A2D9D7252911BF00EEA0C0 /* SensorDataTableViewCell.swift in Sources */,
+				966B8E75255877F100C05DD3 /* BinaryDataErrors.swift in Sources */,
 				9637A45925443F1C00B00B30 /* CoreDataManager.swift in Sources */,
+				966B8E71255877F100C05DD3 /* Common.swift in Sources */,
+				960E02382559984300900F65 /* UInt24.swift in Sources */,
+				966B8E73255877F100C05DD3 /* BinaryData.swift in Sources */,
 				9679E079253B9CD600EAB3A7 /* TextViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -619,7 +645,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 4WX79X589K;
 				INFOPLIST_FILE = /Users/kseniaskurenko/Desktop/TestSensingKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -643,7 +669,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 4WX79X589K;
 				INFOPLIST_FILE = /Users/kseniaskurenko/Desktop/TestSensingKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

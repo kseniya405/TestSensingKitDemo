@@ -113,7 +113,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let z = data.rotationRate.z
             CoreDataManager.shared.initalizeStackIfNeeded()
             do {
-                let lastElement = try CoreDataManager.shared.getLastGyro()
+                let lastElement = try CoreDataManager.shared.getLastGyroscope()
                 if (lastElement?.x == Float.init(x) && lastElement?.y == Float.init(y) && lastElement?.z == Float.init(z)) { return }
                 do {
                     try CoreDataManager.shared.insertGyro(data)
@@ -208,6 +208,7 @@ extension AppDelegate: CLLocationManagerDelegate {
                 catch {
                     print("Can't write data to CoreData")
                 }
+                
             }
             catch {
                 print("Can't write last magnetoneter element from CoreData")

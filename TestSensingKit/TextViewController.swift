@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import ModelIO
+
 
 struct SensorsEntities {
     let date: Date
@@ -25,7 +27,7 @@ enum EntityType {
 }
 
 class TextViewController: UIViewController {
-
+    
     @IBOutlet weak var dataTextView: UITextView! {
         didSet {
             dataTextView.contentInset.bottom = 55
@@ -67,18 +69,18 @@ class TextViewController: UIViewController {
     }
     
     @IBAction func exportButtonDidTap(_ sender: Any) {
-
+        
         let text = readDataFromDatabase()
         let textData = text.data(using: .utf8)
-
+        
         guard let textURL = textData?.dataToFile(fileName: "sensors_data_list.txt") else {return }
-
+        
         var filesToShare = [Any]()
-
+        
         filesToShare.append(textURL)
-
+        
         let activityViewController = UIActivityViewController(activityItems: filesToShare, applicationActivities: nil)
-
+        
         self.present(activityViewController, animated: true, completion: nil)
     }
     
@@ -90,7 +92,9 @@ class TextViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         dataTextView.text = readDataFromDatabase()
-//        setSensorMask()
+        //        setSensorMask()
+        
+        writeToDataFile()
     }
     
     @objc func stopUpdateButtonDidTap() {
@@ -98,6 +102,7 @@ class TextViewController: UIViewController {
         appDelegate.stopSensors()
         startUpdateButton.setTitleColor(.black, for: .normal)
         stopUpdateButton.setTitleColor(.gray, for: .normal)
+        
     }
     
     @objc func startUpdateButtonDidTap() {
@@ -106,7 +111,7 @@ class TextViewController: UIViewController {
         startUpdateButton.setTitleColor(.gray, for: .normal)
         stopUpdateButton.setTitleColor(.black, for: .normal)
     }
-
+    
     func readDataFromFile() -> String? {
         do {
             let documentDirURL = try FileManager.default.url(for: .allLibrariesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -119,73 +124,85 @@ class TextViewController: UIViewController {
     }
     
     fileprivate func readDataFromDatabase() -> String {
+        
+        var sensorsDataList = ""
         do {
-            let locations = try CoreDataManager.shared.fetchLocations().map({ (item) -> SensorsEntities in
-                let date = item.date ?? Date(timeIntervalSince1970: 0)
-                return SensorsEntities(date: date, type: .location, location: item)
-            })
-            let gyros = try CoreDataManager.shared.fetchGyro().map({ (item) -> SensorsEntities in
-                let date = item.date ?? Date(timeIntervalSince1970: 0)
-                return SensorsEntities(date: date, type: .gyroscope, gyroscope: item)
-            })
-            let accelerometers = try CoreDataManager.shared.fetchAccelerometer().map({ (item) -> SensorsEntities in
-                let date = item.date ?? Date(timeIntervalSince1970: 0)
-                return SensorsEntities(date: date, type: .accelerometer, accelerometer: item)
-            })
-            let magnetometers = try CoreDataManager.shared.fetchMagnetometer().map({ (item) -> SensorsEntities in
-                let date = item.date ?? Date(timeIntervalSince1970: 0)
-                return SensorsEntities(date: date, type: .magnetometer, magnetometer: item)
-            })
-            var allSensors = locations + gyros + accelerometers + magnetometers
-            allSensors.sort(by: {$0.date > $1.date})
-            
-            var sensorsDataList = ""
-            
-            allSensors.forEach { (item) in
-                switch item.type {
-                
-                case .location:
-                    if let location = item.location {
-                        let latitude = location.latitude
-                        let longtitude = location.longtitude
-                        let altitude = location.altitude
-                        
-                        sensorsDataList.append("Location: x:\(latitude), y:\(longtitude), z:\(altitude) from \(stringFromDate(date: item.date))\n")
-                    }
-                case .gyroscope:
-                    if let gyroscope = item.gyroscope {
-                        let x = gyroscope.x
-                        let y = gyroscope.y
-                        let z = gyroscope.z
-                        
-                        sensorsDataList.append("Gyroscope: x:\(x), y:\(y), z:\(z) from \(stringFromDate(date: item.date))\n")
-                    }
-                case .magnetometer:
-                    if let magnetometer = item.magnetometer {
-                        let x = magnetometer.x
-                        let y = magnetometer.y
-                        let z = magnetometer.z
-                        
-                        sensorsDataList.append("Magnetometer: x:\(x), y:\(y), z:\(z) from \(stringFromDate(date: item.date))\n")
-                    }
-                case .accelerometer:
-                    if let accelerometer = item.accelerometer {
-                        let x = accelerometer.x
-                        let y = accelerometer.y
-                        let z = accelerometer.z
-                        
-                        sensorsDataList.append("Acceleration: x:\(x), y:\(y), z:\(z) from \(stringFromDate(date: item.date))\n")
-                    }
+            if let lastLocation = try CoreDataManager.shared.getLastLocation() {
+                if let previousDate = SensorData.shared.lastUpdateData, let lastExportedLocation = try CoreDataManager.shared.getLastLocationBeforeDate(date: previousDate)  {
+                    let locationDeltaLatitude = lastLocation.latitude - lastExportedLocation.latitude
+                    let locationDeltaLongtitude = lastLocation.longtitude - lastExportedLocation.longtitude
+                    let locationDeltaAltitude = lastLocation.altitude - lastExportedLocation.altitude
+                    sensorsDataList.append("Location delta: latitude:\(locationDeltaLatitude), longtitude:\(locationDeltaLongtitude), altitude:\(locationDeltaAltitude) from \(stringFromDate(date: lastLocation.date ?? Date()))\n")
+                } else {
+                    sensorsDataList.append("Location initial: latitude:\(lastLocation.latitude), longtitude:\(lastLocation.longtitude), altitude:\(lastLocation.accuracy) from \(stringFromDate(date: lastLocation.date ?? Date()))\n")
                 }
             }
+            if let lastGyroscope = try CoreDataManager.shared.getLastGyroscope() {
+                sensorsDataList.append("Gyroscope : x:\(lastGyroscope.x), y:\(lastGyroscope.y), z:\(lastGyroscope.z) from \(stringFromDate(date: lastGyroscope.date ?? Date()))\n")
+            }
+            //            let gyros = try CoreDataManager.shared.fetchGyroscope().map({ (item) -> SensorsEntities in
+            //                let date = item.date ?? Date(timeIntervalSince1970: 0)
+            //                return SensorsEntities(date: date, type: .gyroscope, gyroscope: item)
+            //            })
+            //            let accelerometers = try CoreDataManager.shared.fetchAccelerometer().map({ (item) -> SensorsEntities in
+            //                let date = item.date ?? Date(timeIntervalSince1970: 0)
+            //                return SensorsEntities(date: date, type: .accelerometer, accelerometer: item)
+            //            })
+            //            let magnetometers = try CoreDataManager.shared.fetchMagnetometer().map({ (item) -> SensorsEntities in
+            //                let date = item.date ?? Date(timeIntervalSince1970: 0)
+            //                return SensorsEntities(date: date, type: .magnetometer, magnetometer: item)
+            //            })
+            //            var allSensors = gyros + accelerometers + magnetometers
+            //            allSensors.sort(by: {$0.date > $1.date})
+            //
+            //
+            //
+            //            allSensors.forEach { (item) in
+            //                switch item.type {
+            //
+            //                case .location:
+            //                    if let location = item.location {
+            //                        let latitude = location.latitude
+            //                        let longtitude = location.longtitude
+            //                        let altitude = location.altitude
+            //
+            //                        sensorsDataList.append("Location: x:\(latitude), y:\(longtitude), z:\(altitude) from \(stringFromDate(date: item.date))\n")
+            //                    }
+            //                case .gyroscope:
+            //                    if let gyroscope = item.gyroscope {
+            //                        let x = gyroscope.x
+            //                        let y = gyroscope.y
+            //                        let z = gyroscope.z
+            //
+            //                        sensorsDataList.append("Gyroscope: x:\(x), y:\(y), z:\(z) from \(stringFromDate(date: item.date))\n")
+            //                    }
+            //                case .magnetometer:
+            //                    if let magnetometer = item.magnetometer {
+            //                        let x = magnetometer.x
+            //                        let y = magnetometer.y
+            //                        let z = magnetometer.z
+            //
+            //                        sensorsDataList.append("Magnetometer: x:\(x), y:\(y), z:\(z) from \(stringFromDate(date: item.date))\n")
+            //                    }
+            //                case .accelerometer:
+            //                    if let accelerometer = item.accelerometer {
+            //                        let x = accelerometer.x
+            //                        let y = accelerometer.y
+            //                        let z = accelerometer.z
+            //
+            //                        sensorsDataList.append("Acceleration: x:\(x), y:\(y), z:\(z) from \(stringFromDate(date: item.date))\n")
+            //                    }
+            //                }
+            //            }
             
-            
+            SensorData.shared.lastUpdateData = Date()
             return sensorsDataList
         }
         catch {
             print("Can't read data from CoreData")
             return ""
         }
+        
     }
     
     func stringFromDate(date: Date) -> String {
@@ -196,7 +213,7 @@ class TextViewController: UIViewController {
     
     
     struct SensorsMask: OptionSet {
-     
+        
         let rawValue: UInt
         
         static let pressure = SensorsMask(rawValue: 1 << 0)
@@ -218,6 +235,113 @@ class TextViewController: UIViewController {
         return mask
     }
     
+    func getHeader() {
+        // let formatVersion =
+    }
+    
+    func writeToDataFile() {
+        
+        do {
+            
+            let filemgr = FileManager.default
+            guard let path = filemgr.urls(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask).last?.appendingPathComponent("out.neolog") else { return }
+            
+            var sensorData = Data()
+            
+            let location = try CoreDataManager.shared.getLastLocation()
+            if let latidude = location?.latitude,
+               let longtitude = location?.longtitude,
+               let altidude = location?.altitude,
+               let accuracy = location?.accuracy {
+                
+                print(latidude, "latitude on write \n", longtitude, "longtitude on write \n", altidude, "altidude on write")
+                
+                var latitudeValue = Int32(latidude * 1000000).bigEndian
+                let latitudeData = withUnsafePointer(to: &latitudeValue) { Data(buffer: UnsafeBufferPointer(start: $0, count: 1))}
+                sensorData.append(latitudeData)
+                                
+                var longtitudeValue = Int32(longtitude * 1000000).bigEndian
+                let longtitudeData = withUnsafePointer(to: &longtitudeValue) { Data(buffer: UnsafeBufferPointer(start: $0, count: 1))}
+                sensorData.append(longtitudeData)
+                
+                var altidudeValue = UInt24(altidude * 10).bigEndian
+                let altidudeData = withUnsafePointer(to: &altidudeValue) { Data(buffer: UnsafeBufferPointer(start: $0, count: 1))}
+                sensorData.append(altidudeData)
+                
+                var accuracyValue = accuracy.bitPattern.bigEndian
+                let accuracyData = withUnsafePointer(to: &accuracyValue) { Data(buffer: UnsafeBufferPointer(start: $0, count: 1))}
+                sensorData.append(accuracyData)
+            }
 
+            let gyroscope = try CoreDataManager.shared.getLastGyroscope()
+            if let gyroscopeX = gyroscope?.x.bitPattern.bigEndian,
+               let gyroscopeY = gyroscope?.y.bitPattern.bigEndian,
+               let gyroscopeZ = gyroscope?.z.bitPattern.bigEndian {
+                
+                print(gyroscopeX, "gyroscopeX on write")
+                               print(gyroscopeY, "gyroscopeY on write")
+                               print(gyroscopeZ, "gyroscopeZ on write")
+                sensorData.append(withUnsafeBytes(of: gyroscopeX) { Data($0) })
+                sensorData.append(withUnsafeBytes(of: gyroscopeY) { Data($0) })
+                sensorData.append(withUnsafeBytes(of: gyroscopeZ) { Data($0) })
+
+            }
+
+            let magnetometer = try CoreDataManager.shared.getLastMagnetometer()
+            if let magnetometerX = magnetometer?.x.bitPattern.bigEndian,
+               let magnetometerY = magnetometer?.y.bitPattern.bigEndian,
+               let magnetometerZ = magnetometer?.z.bitPattern.bigEndian {
+                print(magnetometerX, "magnetometerX on write")
+                               print(magnetometerY, "magnetometerY on write")
+                               print(magnetometerZ, "magnetometerZ on write")
+                sensorData.append(withUnsafeBytes(of: magnetometerX) { Data($0) })
+                sensorData.append(withUnsafeBytes(of: magnetometerY) { Data($0) })
+                sensorData.append(withUnsafeBytes(of: magnetometerZ) { Data($0) })
+
+            }
+
+            let accelerometer = try CoreDataManager.shared.getLastAccelerometer()
+            if let accelerometerX = accelerometer?.x.bitPattern.bigEndian,
+               let accelerometerY = accelerometer?.y.bitPattern.bigEndian,
+               let accelerometerZ = accelerometer?.z.bitPattern.bigEndian {
+                print(accelerometerX, "accelerometerX on write")
+                               print(accelerometerY, "accelerometerY on write")
+                               print(accelerometerZ, "accelerometerZ on write")
+                sensorData.append(withUnsafeBytes(of: accelerometerX) { Data($0) })
+                sensorData.append(withUnsafeBytes(of: accelerometerY) { Data($0) })
+                sensorData.append(withUnsafeBytes(of: accelerometerZ) { Data($0) })
+
+            }
+            
+            try sensorData.write(to: path, options: .atomicWrite)
+            
+            let data =  try Data(contentsOf: path, options: .uncachedRead)
+            readData(data: data)
+            print(data, "data from file")
+            
+        }
+        catch {
+            print("Something went wrong")
+        }
+        
+    }
+    
+    func readData(data: Data) {
+        do {
+        if data.count > 0 {
+            let binary = BinaryData(data: data, bigEndian: true)
+            let latitude: Int32 = try binary.get(0)
+            let longtitude: Int32 = try binary.get(4)
+            let altidude: UInt24 = try binary.get(8)
+            
+            // Float32, Int32 == 4 байта, тоесть если считываем флоат32 методом get(0), то следующий показатель = get(4)
+            print(latitude, longtitude, altidude, "latitude on read")
+        }
+        } catch let error {
+            print(error)
+        }
+    }
+    
 }
+
 

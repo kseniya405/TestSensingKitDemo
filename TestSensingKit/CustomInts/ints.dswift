@@ -1,0 +1,951 @@
+//
+//  ints.dswift
+//  CustomInts
+//
+//  Created by Kseniia Shkurenko on 09.11.2020.
+//
+
+import Foundation
+import NumericPatches
+
+<%!
+#if !_runtime(_ObjC)
+func pow(_ base: Int, _ exponent: Int) -> Int {
+    let d = Foundation.pow(Double(base), Double(exponent))
+    return Int(d)
+}
+#endif
+
+
+let intOperators: [String] = ["+", "-", "*", "/", "%", "|", "&", "^"]
+%>
+
+<%
+func getClosestIntLiteral(_ size: Int) -> Int {
+    var bitSize: Int = 8
+    while bitSize < Int.bitWidth {
+        if bitSize  > size { return bitSize }
+        bitSize = bitSize * 2
+    }
+    return Int.bitWidth
+    
+}
+%>
+<%
+var realIntSizes: [Int] = []
+var sz: Int = 8
+while sz <= Int.bitWidth {
+    realIntSizes.append(sz)
+    sz = sz * 2
+}
+
+func nextRealIntType(for size: Int) -> String {
+    for realSize in realIntSizes.sorted() {
+        if realSize > size && realSize != Int.bitWidth {
+            return "Int\(realSize)"
+        }
+    }
+    return "Int"
+}
+var customIntSizes: [Int] = []
+sz = 8
+while sz < Int.bitWidth {
+    if !realIntSizes.contains(sz) {
+        customIntSizes.append(sz)
+    }
+    sz += 8
+}
+let signedUnSigned: [String] = ["U", ""]
+let varCharacters = Array("abcdefghijklmnopqrstuvwxyz")
+%>
+
+<% for intSize in customIntSizes {
+
+    let numberOfVariables = intSize / 8
+    var intVariables: String = "a"
+    for varPos in 1..<numberOfVariables {
+        intVariables += ", \(varCharacters[varPos])"
+    }
+    
+    for sign in signedUnSigned {
+        let intSelf: String = "\(sign)Int\(intSize)"
+        let nextRealInt: String = "\(sign)\(nextRealIntType(for: intSize))"
+        let isSigned: Bool = !(sign == "U")
+        let intOtherSelf: String = (isSigned) ? "UInt\(intSize)": "Int\(intSize)"
+        let intMagnitude: String = "UInt\(intSize)"
+        let fullSignedText: String = isSigned ? "Signed" : "Unsigned"
+    %>
+    public struct <%=intSelf%>: FixedWidthInteger, <%=fullSignedText%>Integer, CustomReflectable {
+    
+        /// A type that represents an integer literal.
+        public typealias IntegerLiteralType = <%=sign%>Int<%=getClosestIntLiteral(intSize)%>
+        
+        public struct Words: RandomAccessCollection {
+          public typealias Index = Int
+          public typealias Element = UInt
+          //public typealias Indices = DefaultIndices<<%=intSelf%>.Words>
+          //public typealias SubSequence = Slice<<%=intSelf%>.Words>
+
+          internal var _value: <%=intSelf%>
+
+          public init(_ value: <%=intSelf%>) {
+            self._value = value
+          }
+
+          public let count: Int = 1
+
+          public var startIndex: Int = 0
+
+          public var endIndex: Int { return count }
+
+          //public var indices: Indices { return startIndex ..< endIndex }
+
+          @_transparent
+          public func index(after i: Int) -> Int { return i + 1 }
+
+          @_transparent
+          public func index(before i: Int) -> Int { return i - 1 }
+
+          public subscript(position: Int) -> UInt {
+            guard position == startIndex else { fatalError("Index out of bounds") }
+            
+            var mutableSource = _value
+            let size = MemoryLayout.size(ofValue: mutableSource)
+            var bytes: [UInt8] =  withUnsafePointer(to: &mutableSource) {
+                return $0.withMemoryRebound(to: UInt8.self, capacity: size) {
+                    let buffer = UnsafeBufferPointer(start: $0, count: size)
+                    return Array<UInt8>(buffer)
+
+                }
+            }
+            
+            if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            let isNeg = (<%=intSelf%>.isSigned && bytes[0].hasMinusBit )
+            bytes = IntLogic.paddBinaryInteger(bytes, newSizeInBytes: (UInt.bitWidth / 8), isNegative: isNeg)
+            
+            if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            
+            return bytes.withUnsafeBufferPointer {
+                return $0.baseAddress!.withMemoryRebound(to: UInt.self, capacity: 1) {
+                    return UInt($0.pointee)
+                }
+            }
+          }
+        }
+    
+        public static let isSigned: Bool = <%=isSigned%>
+        public static let bitWidth: Int = <%=intSize%>
+        <% if sign == "U" { %>
+        public static let min: <%=intSelf%> = <%=intSelf%>()
+        public static let max: <%=intSelf%> = <%=(pow(2,intSize)-1)%>
+        <%} else {%>
+        public static let min: <%=intSelf%> = <%=-(pow(2,intSize-1))%>
+        public static let max: <%=intSelf%> = <%=(pow(2,intSize-1)-1)%>
+        <%}%>
+        
+        public static let zero: <%=intSelf%> = <%=intSelf%>()
+        internal static let one: <%=intSelf%> = 1
+        <% if sign != "U" { %>
+        internal static let minusOne: <%=intSelf%> = -1
+        <% } %>
+        
+        /// Creates custom mirror to hide all details about ourselves
+        public var customMirror: Mirror { return Mirror(self, children: EmptyCollection()) }
+        
+        public var words: <%=intSelf%>.Words { return <%=intSelf%>.Words(self) }
+        
+        /// Returns a count of all non zero bits in the number
+        public var nonzeroBitCount: Int {
+            return useUnsafeBufferPointer {
+                var rtn: Int = 0
+                for b in $0 {
+                    for i in (0..<8) {
+                        let mask = UInt8(1 << i)
+                        if ((b & mask) == mask) { rtn += 1}
+                    }
+                }
+                return rtn
+            }
+        }
+        
+        /// Returns a new instances of this number type with our byts reversed
+        public var byteSwapped: <%=intSelf%> {
+            
+            return useUnsafeBufferPointer {
+                var bytes = Array<UInt8>($0)
+                bytes.reverse()
+                return <%=intSelf%>(bytes)
+            }
+            
+        }
+        
+        /// Returns the number of leading zeros in this number.  If the number is negative this will return 0
+        public var leadingZeroBitCount: Int {
+            
+            return useUnsafeBufferPointer {
+                var range = Array<Int>(0..<$0.count)
+                if !IntLogic.IS_BIGENDIAN { range = range.reversed() }
+                var foundBit: Bool = false
+                var rtn: Int = 0
+                for i in range where !foundBit {
+                    for x in (0..<8).reversed() where !foundBit {
+                        let mask = UInt8(1 << x)
+                        foundBit = (($0[i] & mask) == mask)
+                        if !foundBit { rtn += 1 }
+                    }
+                }
+                return rtn
+            }
+        }
+        
+        /// Returns the number of trailing zeros in this number
+        public var trailingZeroBitCount: Int {
+            return useUnsafeBufferPointer {
+                var range = Array<Int>(0..<$0.count)
+                if IntLogic.IS_BIGENDIAN { range = range.reversed() }
+                var foundBit: Bool = false
+                var rtn: Int = 0
+                for i in range where !foundBit {
+                    for x in (0..<8).reversed() where !foundBit {
+                        let mask = UInt8(1 << x)
+                        foundBit = (($0[i] & mask) == mask)
+                        if !foundBit { rtn += 1 }
+                    }
+                }
+                return rtn
+            }
+        }
+        
+        public var magnitude: <%=intMagnitude%> {
+            <% if isSigned { %>
+                if self.isZero { return <%=intMagnitude%>() }
+                else if self.mostSignificantByte.hasMinusBit {
+                
+                var bytes = self.bytes
+                if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+                bytes = IntLogic.twosComplement(bytes)
+                if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+                return <%=intMagnitude%>(bytes)
+                
+                } else { return <%=intMagnitude%>(bitPattern: self) }
+            <%} else { %>
+                return self
+            <% } %>
+        }
+        
+        public var bigEndian: <%=intSelf%> {
+            if IntLogic.IS_BIGENDIAN { return self }
+            else { return self.byteSwapped }
+        }
+        
+        public var littleEndian: <%=intSelf%> {
+            if !IntLogic.IS_BIGENDIAN { return self }
+            else { return self.byteSwapped }
+        }
+        
+        internal var bytes: [UInt8] { return [<%=intVariables%>] }
+        
+        /// Internal property used in basic operations
+        fileprivate var iValue: Int {
+            /*guard !self.isZero else { return 0 }
+            
+            var bytes = self.bigEndian.bytes
+            bytes = IntLogic.resizeBinaryInteger(bytes, newSizeInBytes: (Int.bitWidth / 8), isNegative: self.isNegative)
+            
+            if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            
+            let rtn: Int = bytes.withUnsafeBufferPointer {
+                return $0.baseAddress!.withMemoryRebound(to: Int.self, capacity: 1) {
+                    return Int($0.pointee)
+                }
+            }
+            
+            return rtn*/
+            return Int(self)
+        }
+        
+        #if !swift(>=4.0.9)
+        public var hashValue: Int { return self.iValue.hashValue }
+        #endif
+        
+        private var <%=intVariables%>: UInt8
+        
+        public init() {
+            <% for varPos in 0..<numberOfVariables { %>
+            self.<%=varCharacters[varPos]%> = 0
+            <% } %>
+        }
+        
+        public init(_ other: <%=intSelf%>) {
+            <% for varPos in 0..<numberOfVariables { %>
+            self.<%=varCharacters[varPos]%> = other.<%=varCharacters[varPos]%>
+            <% } %>
+        }
+        
+        fileprivate init(_ bytes: [UInt8]) {
+            let intByteSize: Int = <%=intSelf%>.bitWidth / 8
+            precondition(bytes.count == intByteSize, "Byte size missmatch. Expected \(intByteSize), recieved \(bytes.count)")
+            self.init()
+        
+            // Copy bytes into self
+            withUnsafeMutablePointer(to: &self) {
+                $0.withMemoryRebound(to: UInt8.self, capacity: intByteSize) {
+                    let buffer = UnsafeMutableBufferPointer(start: $0, count: intByteSize)
+                    
+                    for i in 0..<buffer.count {
+                        buffer[i] = bytes[i]
+                    }
+                }
+            }
+            
+        }
+        
+        /// Creates a new instance with the same memory representation as the given
+        /// value.
+        ///
+        /// This initializer does not perform any range or overflow checking. The
+        /// resulting instance may not have the same numeric value as
+        /// `bitPattern`---it is only guaranteed to use the same pattern of bits in
+        /// its binary representation.
+        ///
+        /// - Parameter x: A value to use as the source of the new instance's binary
+        ///   representation.
+        public init(bitPattern other: <%=intOtherSelf%>) {
+            precondition(<%=intSelf%>.bitWidth == <%=intOtherSelf%>.bitWidth, "BitWidth of <%=intSelf%> and <%=intOtherSelf%> do not match")
+            
+            self.init(other.bytes)
+        }
+        
+        public init(bigEndian value: <%=intSelf%>) {
+            var bytes = value.bytes
+            if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            self.init(bytes)
+        }
+        
+        public init(littleEndian value: <%=intSelf%>) {
+            var bytes = value.bytes
+            if IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            self.init(bytes)
+        }
+        public init(integerLiteral value: IntegerLiteralType) {
+            self.init(value)
+        }
+        
+        public init(_truncatingBits truncatingBits: UInt) {
+            let typeSize: Int = MemoryLayout<<%=intSelf%>>.size
+            var bytes: [UInt8] =  truncatingBits.bytes
+            
+            if !IntLogic.IS_BIGENDIAN { bytes = bytes.reversed() }
+            while bytes.count > typeSize { bytes.remove(at: 0) }
+            
+            if !IntLogic.IS_BIGENDIAN { bytes = bytes.reversed() }
+            
+            self.init(bytes)
+        }
+        
+        public init<T>(_ source: T) where T : BinaryInteger {
+            
+            // Set required specific integer type information
+            let isLocalTypeSigned = <%=intSelf%>.isSigned
+            let localBitWidth = <%=intSelf%>.bitWidth
+            let localByteWidth = (localBitWidth / 8)
+            let intType = <%=intSelf%>.self
+            
+            var mutableSource = source
+            
+            let size = MemoryLayout<T>.size
+            var bytes: [UInt8] =  withUnsafePointer(to: &mutableSource) {
+                return $0.withMemoryRebound(to: UInt8.self, capacity: size) {
+                    return Array(UnsafeBufferPointer(start: $0, count: size))
+                }
+            }
+            
+            if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            let isNegative = (T.isSigned && bytes[0].hasMinusBit)
+            
+            if !isLocalTypeSigned && T.isSigned && isNegative {
+                fatalError("\(source) is not representable as a '\(intType)' instance")
+            } else if isLocalTypeSigned && !T.isSigned && isNegative && bytes.count >= localByteWidth {
+                fatalError("Not enough bits to represent a signed value")
+            }
+            
+            bytes = IntLogic.resizeBinaryInteger(bytes, newSizeInBytes: localByteWidth, isNegative: (isNegative && T.isSigned))
+            
+            guard bytes.count == localByteWidth else { fatalError("Not enough bits to represent a signed value") }
+            
+            if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            
+            self.init(bytes)
+        }
+        
+        public init<T>(_ source: T) where T : BinaryFloatingPoint {
+            let int: Int = Int(source)
+            self.init(int)
+        }
+        #if swift(>=4.2)
+        //public func hash(into hasher: inout Hasher) {
+        //    self.iValue.hash(into: &hasher)
+        //}
+        #endif
+        
+        public func signum() -> <%=intSelf%> {
+            <% if isSigned { %>
+                if self.isZero { return <%=intSelf%>.zero }
+                else if self.mostSignificantByte.hasMinusBit { return <%=intSelf%>.minusOne }
+                else { return <%=intSelf%>.one }
+            <%} else { %>
+                if self.isZero { return <%=intSelf%>.zero }
+                else { return <%=intSelf%>.one }
+            <% } %>
+            
+        }
+        
+        fileprivate mutating func invert() {
+            let intByteSize: Int = <%=intSelf%>.bitWidth / 8
+            var bytes = self.bytes
+            bytes = IntLogic.twosComplement(bytes)
+            withUnsafeMutablePointer(to: &self) {
+                $0.withMemoryRebound(to: UInt8.self, capacity: intByteSize) {
+                    let buffer = UnsafeMutableBufferPointer(start: $0, count: intByteSize)
+                    
+                    for i in 0..<buffer.count {
+                        buffer[i] = bytes[i]
+                    }
+                }
+            }
+        }
+        
+        public func addingReportingOverflow(_ rhs: <%=intSelf%>) -> (partialValue: <%=intSelf%>, overflow: Bool) {
+            /*guard !rhs.isZero else { return (partialValue: self, overflow: false)  }
+            guard !self.isZero else { return (partialValue: rhs, overflow: false)  }
+            
+            let r = IntLogic.binaryAddition(self.bigEndian.bytes,
+                                            rhs.bigEndian.bytes,
+                                            isSigned: <%=intSelf%>.isSigned)
+            
+            var bytes = r.partial
+            
+            if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            
+            let value: <%=intSelf%> = bytes.withUnsafeBufferPointer {
+                return $0.baseAddress!.withMemoryRebound(to: <%=intSelf%>.self, capacity: 1) {
+                    return <%=intSelf%>($0.pointee)
+                }
+            }
+            return (partialValue: value, overflow: r.overflow)*/
+            
+            guard !rhs.isZero else { return (partialValue: self, overflow: false) }
+            guard !self.isZero else { return (partialValue: rhs, overflow: false) }
+            
+            let r = <%=nextRealInt%>(self).addingReportingOverflow(<%=nextRealInt%>(rhs))
+            
+            if r.overflow ||
+               r.partialValue > <%=nextRealInt%>(<%=intSelf%>.max) ||
+               r.partialValue < <%=nextRealInt%>(<%=intSelf%>.min) {
+                // Overflows over the bounds of our int
+                return (partialValue: <%=intSelf%>(truncatingIfNeeded: r.partialValue), overflow: true)
+            }
+            
+            return (partialValue: <%=intSelf%>(r.partialValue), overflow: false)
+            
+        }
+        
+        public func subtractingReportingOverflow(_ rhs: <%=intSelf%>) -> (partialValue: <%=intSelf%>, overflow: Bool) {
+            /*guard !rhs.isZero else { return (partialValue: self, overflow: false)  }
+            
+            let r = IntLogic.binarySubtraction(self.bigEndian.bytes,
+                                               rhs.bigEndian.bytes,
+                                               isSigned: <%=intSelf%>.isSigned)
+            
+            var bytes = r.partial
+            
+            if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            
+            let value: <%=intSelf%> = bytes.withUnsafeBufferPointer {
+                return $0.baseAddress!.withMemoryRebound(to: <%=intSelf%>.self, capacity: 1) {
+                    return <%=intSelf%>($0.pointee)
+                }
+            }
+            return (partialValue: value, overflow: r.overflow)*/
+            
+            guard !rhs.isZero else { return (partialValue: self, overflow: false) }
+            guard !(self.isZero && <%=intSelf%>.isSigned) else { return (partialValue: rhs, overflow: false) }
+            
+            let r = <%=nextRealInt%>(self).subtractingReportingOverflow(<%=nextRealInt%>(rhs))
+            
+            if r.overflow ||
+               r.partialValue > <%=nextRealInt%>(<%=intSelf%>.max) ||
+               r.partialValue < <%=nextRealInt%>(<%=intSelf%>.min) {
+                // Overflows over the bounds of our int
+                return (partialValue: <%=intSelf%>(truncatingIfNeeded: r.partialValue), overflow: true)
+            }
+            
+            return (partialValue: <%=intSelf%>(r.partialValue), overflow: false)
+            
+        }
+        
+        public func multipliedFullWidth(by other: <%=intSelf%>) -> (high: <%=intSelf%>, low: <%=intMagnitude%>) {
+            /*let r = IntLogic.binaryMultiplication(self.bigEndian.bytes,
+                                                  other.bigEndian.bytes,
+                                                  isSigned: <%=intSelf%>.isSigned)
+            
+            let low = r.low.withUnsafeBufferPointer {
+                return $0.baseAddress!.withMemoryRebound(to: <%=intMagnitude%>.self, capacity: 1) {
+                    return <%=intMagnitude%>(bigEndian: $0.pointee)
+                }
+            }
+            
+            let high = r.high.withUnsafeBufferPointer {
+                return $0.baseAddress!.withMemoryRebound(to: <%=intSelf%>.self, capacity: 1) {
+                    return <%=intSelf%>(bigEndian: $0.pointee)
+                }
+            }
+            
+            return (high: high, low: low)*/
+            
+            
+            let r = <%=nextRealInt%>(self).multipliedFullWidth(by: <%=nextRealInt%>(other))
+            
+            let val = r.low
+            
+            let high = val >> <%=intSelf%>.bitWidth
+            let low = val - (high << <%=intSelf%>.bitWidth)
+            
+            return (high: <%=intSelf%>(high), low: <%=intMagnitude%>(low))
+            
+        }
+        
+        public func multipliedReportingOverflow(by rhs: <%=intSelf%>) -> (partialValue: <%=intSelf%>, overflow: Bool) {
+            /*guard !self.isZero && !rhs.isZero else { return (partialValue: <%=intSelf%>(), overflow: false)  }
+            
+            let r = self.multipliedFullWidth(by: rhs)
+            let val = <%=intSelf%>(truncatingIfNeeded: r.low)
+            //let val = <%=intSelf%>(bitPattern: r.low)
+            var overflow: Bool = false
+            if !self.isZero && !rhs.isZero && val.isZero { overflow = true }
+            else if !<%=intSelf%>.isSigned && r.high == 1 { overflow = true }
+            else if <%=intSelf%>.isSigned && !self.isNegative && !rhs.isNegative && val.isNegative {
+                overflow = true
+            } else {
+                if xor(self.isNegative, rhs.isNegative) && !val.isNegative { overflow = true }
+            }
+            
+            return (partialValue: val, overflow: overflow)*/
+            
+            guard !self.isZero && !rhs.isZero else { return (partialValue: <%=intSelf%>.zero, overflow: false) }
+            
+            let r = <%=nextRealInt%>(self).multipliedReportingOverflow(by: <%=nextRealInt%>(rhs))
+            
+            if r.overflow ||
+               r.partialValue > <%=nextRealInt%>(<%=intSelf%>.max) ||
+               r.partialValue < <%=nextRealInt%>(<%=intSelf%>.min) {
+                // Overflows over the bounds of our int
+                return (partialValue: <%=intSelf%>(truncatingIfNeeded: r.partialValue), overflow: true)
+            }
+            
+            return (partialValue: <%=intSelf%>(r.partialValue), overflow: false)
+            
+        }
+        
+        public func dividingFullWidth(_ dividend: (high: <%=intSelf%>, low: Magnitude)) -> (quotient: <%=intSelf%>, remainder: <%=intSelf%>) {
+            // We are cheating here.  Instead of using our own code.  we are casting as base Int type
+            
+             <% if isSigned { %>
+                let divisor = (dividend.high.iValue << <%=intSelf%>.bitWidth) + Int(dividend.low)
+                
+                let r = self.iValue.quotientAndRemainder(dividingBy: divisor)
+                return (quotient: <%=intSelf%>(r.quotient), remainder: <%=intSelf%>(r.remainder))
+                
+             <% } else { %>
+                let divisor = (UInt(dividend.high.iValue) << UInt(<%=intSelf%>.bitWidth)) + UInt(dividend.low)
+                
+                let r = UInt(self.iValue).quotientAndRemainder(dividingBy: divisor)
+                return (quotient: <%=intSelf%>(r.quotient), remainder: <%=intSelf%>(r.remainder))
+            <% } %>
+        }
+        
+        public func dividedReportingOverflow(by rhs: <%=intSelf%>) -> (partialValue: <%=intSelf%>, overflow: Bool) {
+            /*// We are cheating here.  Instead of using our own code.  we are casting as base Int type
+            guard !self.isZero else { return (partialValue: <%=intSelf%>(), overflow: false)  }
+            guard !rhs.isZero else { return (partialValue: self, overflow: true)   }
+            
+            <% if isSigned { %>
+                let intValue = self.iValue / rhs.iValue
+                let hasOverflow = (intValue > <%=intSelf%>.max.iValue || intValue < <%=intSelf%>.min.iValue)
+                return (partialValue: <%=intSelf%>(truncatingIfNeeded: intValue), overflow: hasOverflow)
+            <% } else { %>
+                let intValue: UInt = UInt(self.iValue) / UInt(rhs.iValue)
+                let hasOverflow = (intValue > <%=intSelf%>.max.iValue || intValue < <%=intSelf%>.min.iValue)
+                return (partialValue: <%=intSelf%>(truncatingIfNeeded: intValue), overflow: hasOverflow)
+            <% } %>*/
+            
+            guard !self.isZero else { return (partialValue: <%=intSelf%>.zero, overflow: false)  }
+            guard !rhs.isZero else { return (partialValue: self, overflow: true) }
+            
+            let r = <%=nextRealInt%>(self).dividedReportingOverflow(by: <%=nextRealInt%>(rhs))
+            
+            if r.overflow ||
+               r.partialValue > <%=nextRealInt%>(<%=intSelf%>.max) ||
+               r.partialValue < <%=nextRealInt%>(<%=intSelf%>.min) {
+                // Overflows over the bounds of our int
+                return (partialValue: <%=intSelf%>(truncatingIfNeeded: r.partialValue), overflow: true)
+            }
+            
+            return (partialValue: <%=intSelf%>(r.partialValue), overflow: false)
+            
+        }
+    
+        public func remainderReportingOverflow(dividingBy rhs: <%=intSelf%>) -> (partialValue: <%=intSelf%>, overflow: Bool) {
+            /*guard !rhs.isZero else { return (partialValue: self, overflow: true)  }
+            
+            var selfValue = self
+            let rhsValue = rhs
+            
+            <% if isSigned { %>
+            let isSelfNeg = selfValue.isNegative
+            if isSelfNeg { selfValue = selfValue * -1  }
+            <% } %>
+            
+            while selfValue >= rhsValue {
+                //print("selfValue: \(selfValue), rhsValue: \(rhsValue)")
+                selfValue = selfValue - rhsValue
+            }
+            <% if isSigned { %>
+            if isSelfNeg { selfValue = selfValue * -1  }
+            <% } %>
+            
+            return (partialValue: selfValue, overflow: false)*/
+            
+            
+            guard !rhs.isZero else { return (partialValue: self, overflow: true)  }
+            
+            let r = <%=nextRealInt%>(self).remainderReportingOverflow(dividingBy: <%=nextRealInt%>(rhs))
+            return (partialValue: <%=intSelf%>(r.partialValue), overflow: r.overflow)
+        }
+        
+        public func distance(to other: <%=intSelf%>) -> Int {
+            //Taken from https://github.com/apple/swift/blob/master/stdlib/public/core/Integers.swift.gyb
+            <% if !isSigned { %>
+                if self > other {
+                    if let result = Int(exactly: self - other) {
+                        return -result
+                    }
+                } else {
+                    if let result = Int(exactly: other - self) {
+                        return result
+                    }
+                }
+            <% } else { %>
+                let isNeg = self.isNegative
+                if isNeg == other.isNegative {
+                    if let result = Int(exactly: other - self) {
+                        return result
+                    }
+                } else {
+                    if let result = Int(exactly: self.magnitude + other.magnitude) {
+                        return isNegative ? result : -result
+                    }
+                }
+            <% } %>
+            preconditionFailure("Distance is not representable in Int")
+            //_preconditionFailure("Distance is not representable in Int")
+        }
+        
+        public func advanced(by n: Int) -> <%=intSelf%> {
+            //Taken from https://github.com/apple/swift/blob/master/stdlib/public/core/Integers.swift.gyb
+            <% if !isSigned { %>
+                return (n.isNegative ? (self - <%=intSelf%>(-n)) : (self + <%=intSelf%>(n)) )
+            <% } else { %>
+                if  (self.isNegative == n.isNegative) { return (self + <%=intSelf%>(n)) }
+            
+                return (self.magnitude < n.magnitude) ? <%=intSelf%>(Int(self) + n) : (self + <%=intSelf%>(n))
+            <% } %>
+        }
+        
+        
+        public static func == (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> Bool {
+            return lhs.bytes == rhs.bytes
+        }
+        public static func == <Other>(lhs: <%=intSelf%>, rhs: Other) -> Bool where Other : BinaryInteger {
+            /*
+            // If the two numbers don't have the same sign, we will return false right away
+            guard (lhs.isNegative == rhs.isNegative) else { return false }
+            
+            //Get raw binary integers and reduce to smalles representation
+            // Must reduce otherwise equals will return false if integer value is the same but array sizes are different
+            // So if we reduce to the smalles byte size that can represent the integers it makes it easier to compare no
+            // matter what integer types we are comparing
+            let lhb = IntLogic.minimizeBinaryInteger(lhs.bigEndian.bytes, isSigned: <%=intSelf%>.isSigned)
+            let rhb = IntLogic.minimizeBinaryInteger(rhs.bigEndianBytes, isSigned: Other.isSigned)
+            
+            
+            return (lhb == rhb)*/
+            
+            return <%=nextRealInt%>(lhs) == rhs
+        }
+        
+        public static func != (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> Bool {
+            return !(lhs == rhs)
+        }
+        public static func != <Other>(lhs: <%=intSelf%>, rhs: Other) -> Bool where Other : BinaryInteger {
+            return !(lhs == rhs)
+        }
+        
+        public static func < (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> Bool {
+            //return IntLogic.binaryIsLessThan(lhs.bigEndian.bytes, rhs.bigEndianBytes, isSigned: <%=intSelf%>.isSigned)
+            return <%=nextRealInt%>(lhs) < <%=nextRealInt%>(rhs)
+        }
+        public static func < <Other>(lhs: <%=intSelf%>, rhs: Other) -> Bool where Other : BinaryInteger {
+            /*
+            // -A < B ?
+            if lhs.isNegative && !rhs.isNegative { return true }
+            // A < -B
+            if !lhs.isNegative && rhs.isNegative { return false }
+            
+            // We don't care about the signed flag on the rhs type because
+            // for formulate will be -A < -B || A < B so the sign on A will be the same as the sign on B
+            return IntLogic.binaryIsLessThan(lhs.bigEndian.bytes, rhs.bigEndianBytes, isSigned: <%=intSelf%>.isSigned) */
+            
+            return <%=nextRealInt%>(lhs) < <%=nextRealInt%>(rhs)
+        }
+        
+        public static func > (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> Bool {
+            //return ((lhs != rhs) && !(lhs < rhs))
+            return <%=nextRealInt%>(lhs) > <%=nextRealInt%>(rhs)
+        }
+        public static func > <Other>(lhs: <%=intSelf%>, rhs: Other) -> Bool where Other : BinaryInteger {
+            //return ((lhs != rhs) && !(lhs < rhs))
+            return <%=nextRealInt%>(lhs) > rhs
+        }
+        
+        public static func + (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> <%=intSelf%> {
+             let r = lhs.addingReportingOverflow(rhs)
+            guard !r.overflow else { fatalError("Overflow") }
+            return r.partialValue
+        }
+        
+        public static func - (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> <%=intSelf%> {
+            let r = lhs.subtractingReportingOverflow(rhs)
+            guard !r.overflow else { fatalError("Overflow") }
+            return r.partialValue
+        }
+        
+        public static func * (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> <%=intSelf%> {
+            let r = lhs.multipliedReportingOverflow(by: rhs)
+            guard !r.overflow else { fatalError("Overflow") }
+            return r.partialValue
+        }
+        
+        public static func / (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> <%=intSelf%> {
+            let r = lhs.dividedReportingOverflow(by: rhs)
+            guard !r.overflow else { fatalError("Overflow") }
+            return r.partialValue
+        }
+        
+        public static func % (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> <%=intSelf%> {
+            let r = lhs.remainderReportingOverflow(dividingBy: rhs)
+            guard !r.overflow else { fatalError("Overflow") }
+            return r.partialValue
+        }
+        
+        public static func & (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> <%=intSelf%>  {
+            var lhb = lhs.bigEndianBytes
+            let rhb = rhs.bigEndianBytes
+            for i in 0..<lhb.count {
+                lhb[i] = lhb[i] & rhb[i]
+            }
+            
+            if !IntLogic.IS_BIGENDIAN { lhb.reverse() }
+            
+            return <%=intSelf%>(lhb)
+            
+        }
+        
+        public static func | (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> <%=intSelf%>  {
+            var lhb = lhs.bigEndianBytes
+            let rhb = rhs.bigEndianBytes
+            for i in 0..<lhb.count {
+                lhb[i] = lhb[i] | rhb[i]
+            }
+            
+            if !IntLogic.IS_BIGENDIAN { lhb.reverse() }
+            
+            return <%=intSelf%>(lhb)
+            
+        }
+        
+        public static func ^ (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> <%=intSelf%>  {
+            var lhb = lhs.bigEndianBytes
+            let rhb = rhs.bigEndianBytes
+            for i in 0..<lhb.count {
+                lhb[i] = lhb[i] ^ rhb[i]
+            }
+            
+            if !IntLogic.IS_BIGENDIAN { lhb.reverse() }
+            
+            return <%=intSelf%>(lhb)
+            
+        }
+        
+        public static func >>(lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> <%=intSelf%> {
+            guard !rhs.isZero else { return lhs }
+            var bytes = IntLogic.bitShiftRight(lhs.bigEndian.bytes, count: Int(rhs), isNegative: lhs.isNegative)
+            if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            
+            return <%=intSelf%>(bytes)
+            
+        }
+        
+        public static func >><Other>(lhs: <%=intSelf%>, rhs: Other) -> <%=intSelf%> where Other : BinaryInteger {
+            guard !rhs.isZero else { return lhs }
+            return lhs >> <%=intSelf%>(rhs)
+        }
+        
+        public static func << (lhs: <%=intSelf%>, rhs: <%=intSelf%>) -> <%=intSelf%>  {
+            guard !rhs.isZero else { return lhs }
+            var bytes = IntLogic.bitShiftLeft(lhs.bigEndian.bytes, count: Int(rhs), isNegative: lhs.isNegative)
+            if !IntLogic.IS_BIGENDIAN { bytes.reverse() }
+            
+            return <%=intSelf%>(bytes)
+        }
+        
+        public static func <<<Other>(lhs: <%=intSelf%>, rhs: Other) -> <%=intSelf%> where Other : BinaryInteger {
+            guard !rhs.isZero else { return lhs }
+            return lhs << <%=intSelf%>(rhs)
+        }
+        
+<%  for op in intOperators { %>
+        public static func <%=op%>= (lhs: inout <%=intSelf%>, rhs: <%=intSelf%>) {
+            lhs = lhs <%=op%> rhs
+        }
+<%  } %>
+
+    }
+    
+    #if !swift(>=5.0)
+    extension <%=intSelf%>: AdditiveArithmetic { }
+    #endif
+    /// MARK: - <%=intSelf%> - Codable
+    extension <%=intSelf%>: Codable {
+        public init(from decoder: Decoder) throws {
+            var container = try decoder.singleValueContainer()
+            self = try container.decode(<%=intSelf%>.self)
+        }
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            try container.encode(self)
+        }
+    }
+    
+    <% } %>
+
+<% } %>
+
+public extension UnkeyedDecodingContainer {
+    <%
+    for intSize in customIntSizes {
+        for sign in ["U", ""] {
+            let nextRealInt: String = "\(sign)\(nextRealIntType(for: intSize))"
+    %>
+    mutating func decode(_ type: <%=sign%>Int<%=intSize%>.Type) throws -> <%=sign%>Int<%=intSize%> {
+        let value = try self.decode(<%=nextRealInt%>.self)
+        return <%=sign%>Int<%=intSize%>(value)
+    }
+    <%
+        }
+    }
+    %>
+}
+
+public extension SingleValueDecodingContainer {
+    <%
+    for intSize in customIntSizes {
+        for sign in ["U", ""] {
+            let nextRealInt: String = "\(sign)\(nextRealIntType(for: intSize))"
+    %>
+    mutating func decode(_ type: <%=sign%>Int<%=intSize%>.Type) throws -> <%=sign%>Int<%=intSize%> {
+        let value = try self.decode(<%=nextRealInt%>.self)
+        return <%=sign%>Int<%=intSize%>(value)
+    }
+    <%
+        }
+    }
+    %>
+}
+
+public extension KeyedDecodingContainer {
+    <%
+    for intSize in customIntSizes {
+        for sign in ["U", ""] {
+            let nextRealInt: String = "\(sign)\(nextRealIntType(for: intSize))"
+    %>
+    mutating func decode(_ type: <%=sign%>Int<%=intSize%>.Type, forKey key: KeyedDecodingContainer.Key) throws -> <%=sign%>Int<%=intSize%> {
+        let value = try self.decode(<%=nextRealInt%>.self, forKey: key)
+        return <%=sign%>Int<%=intSize%>(value)
+    }
+    <%
+        }
+    }
+    %>
+}
+
+public extension UnkeyedEncodingContainer {
+    <%
+    for intSize in customIntSizes {
+        for sign in ["U", ""] {
+            let nextRealInt: String = "\(sign)\(nextRealIntType(for: intSize))"
+    %>
+    mutating func encode(_ value: <%=sign%>Int<%=intSize%>) throws {
+        try self.encode(<%=nextRealInt%>(value))
+    }
+    <%
+        }
+    }
+    %>
+}
+
+public extension SingleValueEncodingContainer {
+    <%
+    for intSize in customIntSizes {
+        for sign in ["U", ""] {
+            let nextRealInt: String = "\(sign)\(nextRealIntType(for: intSize))"
+    %>
+    mutating func encode(_ value: <%=sign%>Int<%=intSize%>) throws {
+        try self.encode(<%=nextRealInt%>(value))
+    }
+    <%
+        }
+    }
+    %>
+}
+
+public extension KeyedEncodingContainer {
+    <%
+    for intSize in customIntSizes {
+        for sign in ["U", ""] {
+            let nextRealInt: String = "\(sign)\(nextRealIntType(for: intSize))"
+    %>
+    mutating func encode(_ value: <%=sign%>Int<%=intSize%>, forKey key: Key) throws {
+        try self.encode(<%=nextRealInt%>(value), forKey: key)
+    }
+    <%
+        }
+    }
+    %>
+}
+
+public extension NSNumber {
+    <%
+    for intSize in customIntSizes {
+        for sign in ["U", ""] {
+            let nextRealInt: String = "\(sign)\(nextRealIntType(for: intSize))"
+    %>
+    @nonobjc
+    convenience init(value:  <%=sign%>Int<%=intSize%>) {
+        self.init(value: <%=nextRealInt%>(value))
+    }
+    <%
+        }
+    }
+    %>
+}

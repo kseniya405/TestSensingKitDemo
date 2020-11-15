@@ -41,6 +41,7 @@ class CoreDataManager {
         location.longtitude = Float(locationObject.coordinate.longitude)
         location.altitude = Float(locationObject.altitude)
         location.date = Date()
+        location.accuracy = locationObject.horizontalAccuracy
         
         self.context.insert(location)
         try self.context.save()
@@ -64,6 +65,38 @@ class CoreDataManager {
         fetchRequest.fetchLimit = 1
         return try self.context.fetch(fetchRequest).first
     }
+    
+    func getPenultLocation() throws -> LocationSensorEntity? {
+        let fetchRequest = LocationSensorEntity.fetchRequest() as NSFetchRequest<LocationSensorEntity>
+        let sort = NSSortDescriptor(key: "date", ascending: false)
+        fetchRequest.sortDescriptors = [sort]
+        fetchRequest.fetchLimit = 2
+        return try self.context.fetch(fetchRequest).last
+    }
+    
+    func getDeltaLocation() throws -> (Float, Float, Float)? {
+        guard let lastLoc = try getLastLocation() else { return nil }
+        guard let penultLoc = try getPenultLocation() else {
+            return (lastLoc.latitude, lastLoc.longtitude, lastLoc.altitude)
+        }
+        
+        let lat = lastLoc.latitude - penultLoc.latitude
+        let long = lastLoc.longtitude - penultLoc.longtitude
+        let alt = lastLoc.altitude - penultLoc.altitude
+        return (lat, long, alt)
+    }
+    
+    func getLastLocationBeforeDate(date: Date) throws -> LocationSensorEntity? {
+        let fetchRequest = LocationSensorEntity.fetchRequest() as NSFetchRequest<LocationSensorEntity>
+        let sort = NSSortDescriptor(key: "date", ascending: false)
+        fetchRequest.sortDescriptors = [sort]
+        fetchRequest.fetchLimit = 1
+        let predicate = NSPredicate(format: "date <= %@", date as NSDate)
+        fetchRequest.predicate = predicate
+        return try self.context.fetch(fetchRequest).first
+    }
+    
+    
 
 //MARK: Gyroscope
     func insertGyro(_ data: CMGyroData) throws {
@@ -77,7 +110,7 @@ class CoreDataManager {
         try self.context.save()
     }
     
-    func fetchGyro() throws -> [GyroscopeSensorEntity] {
+    func fetchGyroscope() throws -> [GyroscopeSensorEntity] {
         return try self.context.fetch(GyroscopeSensorEntity.fetchRequest() as NSFetchRequest<GyroscopeSensorEntity>)
     }
     
@@ -88,11 +121,21 @@ class CoreDataManager {
         try self.context.save()
     }
     
-    func getLastGyro() throws -> GyroscopeSensorEntity? {
+    func getLastGyroscope() throws -> GyroscopeSensorEntity? {
         let fetchRequest = GyroscopeSensorEntity.fetchRequest() as NSFetchRequest<GyroscopeSensorEntity>
         let sort = NSSortDescriptor(key: "date", ascending: false)
         fetchRequest.sortDescriptors = [sort]
         fetchRequest.fetchLimit = 1
+        return try self.context.fetch(fetchRequest).first
+    }
+    
+    func getLastGyroscopeBeforeDate(date: Date) throws -> GyroscopeSensorEntity? {
+        let fetchRequest = GyroscopeSensorEntity.fetchRequest() as NSFetchRequest<GyroscopeSensorEntity>
+        let sort = NSSortDescriptor(key: "date", ascending: false)
+        fetchRequest.sortDescriptors = [sort]
+        fetchRequest.fetchLimit = 1
+        let predicate = NSPredicate(format: "date <= %@", date as NSDate)
+        fetchRequest.predicate = predicate
         return try self.context.fetch(fetchRequest).first
     }
 

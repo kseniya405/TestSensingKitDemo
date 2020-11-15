@@ -2,13 +2,12 @@
 //  LocationSensorEntity+CoreDataProperties.swift
 //  
 //
-//  Created by Kseniia Shkurenko on 25.10.2020.
+//  Created by Kseniia Shkurenko on 01.11.2020.
 //
 //
 
 import Foundation
 import CoreData
-
 
 extension LocationSensorEntity {
 
@@ -20,5 +19,6 @@ extension LocationSensorEntity {
     @NSManaged public var date: Date?
     @NSManaged public var latitude: Float
     @NSManaged public var longtitude: Float
+    @NSManaged public var accuracy: Double
 
 }

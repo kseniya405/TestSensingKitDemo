@@ -6,8 +6,8 @@ target 'TestSensingKit' do
   use_frameworks!
 
   # Pods for TestSensingKit
-    pod 'SensingKit'
 
+  
   target 'TestSensingKitTests' do
     inherit! :search_paths
     # Pods for testing

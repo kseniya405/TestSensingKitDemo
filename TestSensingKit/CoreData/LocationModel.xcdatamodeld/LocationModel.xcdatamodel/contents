@@ -13,6 +13,7 @@
         <attribute name="z" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <entity name="LocationSensorEntity" representedClassName=".LocationSensorEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="accuracy" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="altitude" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="latitude" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -27,7 +28,7 @@
     <elements>
         <element name="AccelerometerSensorEntity" positionX="-18" positionY="72" width="128" height="103"/>
         <element name="GyroscopeSensorEntity" positionX="-36" positionY="36" width="128" height="103"/>
-        <element name="LocationSensorEntity" positionX="-54" positionY="-9" width="128" height="103"/>
+        <element name="LocationSensorEntity" positionX="-54" positionY="-9" width="128" height="118"/>
         <element name="MagnetometerSensorEntity" positionX="0" positionY="99" width="128" height="103"/>
     </elements>
 </model>
